@@ -1,0 +1,19 @@
+{
+  "uuid": "531ae8a7-e0a9-435e-85b0-302bcb8774e6",
+  "shortName": "Enigma",
+  "longName": "Enigma",
+  "companyName": "Peter Leng",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
