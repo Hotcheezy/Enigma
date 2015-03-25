@@ -8,7 +8,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Up");
+  text_layer_set_text(text_layer, "Up"); 
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
