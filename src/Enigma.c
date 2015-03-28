@@ -14,14 +14,15 @@ int textCounter = 0;
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(input_message_layer, strcat(inputMessage,inputText[textCounter-1]));
+ // text_layer_set_text(output_text_layer, "V");
 }
 
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(input_text_layer, "Up"); 
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) { 
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(input_text_layer, inputText[textCounter]);
+
   textCounter++;
   if(textCounter == 26){
     textCounter = 0;
@@ -37,31 +38,38 @@ static void click_config_provider(void *context) {
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
-  GFont systems_font1 = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK);
-  GFont systems_font2 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
+  GFont textFont = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK);
+  GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14);
 
-  input_text_layer = text_layer_create((GRect) { .origin = { -45, 100 }, .size = { bounds.size.w, 110 } });
-  input_message_layer = text_layer_create((GRect) { .origin = { 70, 80 }, .size = { bounds.size.w, 30 } });
+  input_text_layer = text_layer_create((GRect) { .origin = { -40, 100 }, .size = { 130, 110 } });
+  //output_text_layer = text_layer_create((GRect) { .origin = { 10, 0 }, .size = { 130, 110 } });
+ 
+  input_message_layer = text_layer_create((GRect) { .origin = { 60, 90 }, .size = { 75, 90 } });
   
   text_layer_set_text(input_text_layer, inputText[0]);
+  //text_layer_set_text(output_text_layer, "A");
 
-  text_layer_set_font(input_text_layer, systems_font1);
-  text_layer_set_font(input_message_layer, systems_font2);
+  text_layer_set_font(input_text_layer, textFont);
+  //text_layer_set_font(output_text_layer, textFont);
+  text_layer_set_font(input_message_layer, messageFont);
   text_layer_set_text_alignment(input_text_layer, GTextAlignmentCenter);
 
   layer_add_child(window_layer, text_layer_get_layer(input_text_layer));
   layer_add_child(window_layer, text_layer_get_layer(input_message_layer));
+  //layer_add_child(window_layer, text_layer_get_layer(output_text_layer));
 
 }
 
 static void window_unload(Window *window) {
   text_layer_destroy(input_text_layer);
   text_layer_destroy(input_message_layer);
+ // text_layer_destroy(output_text_layer);
 }
 
 static void init(void) {
   window = window_create();
   window_set_click_config_provider(window, click_config_provider);
+  window_set_fullscreen(window, true);
   window_set_window_handlers(window, (WindowHandlers) {
     .load = window_load,
     .unload = window_unload,
