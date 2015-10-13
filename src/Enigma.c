@@ -20,15 +20,15 @@ static TextLayer *output_text_layer;
 static TextLayer *output_message_layer;
 
 // List of the alphabet
-char *inputText[27] = {"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
+char *inputText[26] = {"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
                        "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};     
 
-char *outputText[27] = {"A","Q","U","B","C","R","S","U","V","T","D","E","I",
+char *outputText[26] = {"A","Q","U","B","C","R","S","U","V","T","D","E","I",
                        "Y","Z","F","G","J","K","L","M","N","O","P","Q","W"}; 
 
 // Message holder for input       
-char *inputMessage = "";
-char *outputMessage = "";
+char *inputMessage = " ";
+char *outputMessage = " ";
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
@@ -39,7 +39,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   // Change the text for each input and output 
   text_layer_set_text(input_message_layer,strcat(inputMessage,inputText[textCounter]));
   text_layer_set_text(output_message_layer,strcat(outputMessage,outputText[textCounter]));
-  text_layer_set_text(output_text_layer, inputText[textCounter]);
+  text_layer_set_text(output_text_layer, outputText[textCounter]);
 }
 
 // When up button is clicked
@@ -48,13 +48,14 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 // When down button is clicked
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-// The input letter increments with each down clicks therefore a counter
-  text_layer_set_text(input_text_layer, inputText[textCounter]);
 
   textCounter++;
+// The input letter increments with each down clicks therefore a counter
+  text_layer_set_text(input_text_layer, inputText[textCounter]);
   if(textCounter == 26 || textCounter > 26){
     // If letter is Z, reset to "A"
     textCounter = 0;
+    text_layer_set_text(input_text_layer, inputText[textCounter]);
   }
 }
 
