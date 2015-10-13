@@ -2,21 +2,18 @@
 #include <pebble.h>
 #include <string.h>
 
-// Define 
-#define LAYER_1_PATH_COUNT 10
 
-
-
-// Declare Variables --------------------------------------
-
+// -------------------------------------------------------------------------------------------------------
+//                                      Declare Variables
+// -------------------------------------------------------------------------------------------------------
 // Windows 
 static Window *window;
 static Window *logoWindow;
 
-
-static TextLayer *input_text_layer;
-static TextLayer *input_message_layer;
+// Textlayers 
+static TextLayer *input_text_layer; 
 static TextLayer *output_text_layer;   
+static TextLayer *input_message_layer;
 static TextLayer *output_message_layer;
 
 // List of the alphabet
@@ -26,15 +23,22 @@ char *inputText[26] = {"A","B","C","D","E","F","G","H","I","J","K","L","M",
 char *outputText[26] = {"A","Q","U","B","C","R","S","U","V","T","D","E","I",
                        "Y","Z","F","G","J","K","L","M","N","O","P","Q","W"}; 
 
-// Message holder for input       
+// Message holder for input and output    
 char *inputMessage = " ";
-char *outputMessage = " ";
+char *outputMessage = "A";
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
-// --------------------------------------------------------------
 
-// When select button is clicked
+// -------------------------------------------------------------------------------------------------------
+//                                      End: Declare Variables
+// -------------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------------
+//                                 The Main Screen: Set button map 
+// -------------------------------------------------------------------------------------------------------
+
+// When SELECT button is clicked
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   // Change the text for each input and output 
   text_layer_set_text(input_message_layer,strcat(inputMessage,inputText[textCounter]));
@@ -42,31 +46,41 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(output_text_layer, outputText[textCounter]);
 }
 
-// When up button is clicked
+// When UP button is clicked
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) { 
 }
 
-// When down button is clicked
+// When DOWN button is clicked
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-
+  // The input letter increments with each down clicks therefore a counter
   textCounter++;
-// The input letter increments with each down clicks therefore a counter
   text_layer_set_text(input_text_layer, inputText[textCounter]);
-  if(textCounter == 26 || textCounter > 26){
-    // If letter is Z, reset to "A"
+
+  // If the counter has reached the end 
+  if(textCounter >= 26){
+    // Set the counter to A
     textCounter = 0;
+    // Update the input text layer
     text_layer_set_text(input_text_layer, inputText[textCounter]);
   }
 }
 
+// The button mapping for the main screen
 static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
 }
+// -------------------------------------------------------------------------------------------------------
+//                                End: The Main Screen: set button map
+// -------------------------------------------------------------------------------------------------------
 
-// Main application window ---------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------
+//                               The Main Screen: Windows Load and unload
+// -------------------------------------------------------------------------------------------------------
 static void window_load(Window *window) {
+
+  // Set layer 
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
   // Load the fonts
@@ -98,8 +112,9 @@ static void window_load(Window *window) {
   text_layer_set_background_color(input_text_layer, GColorWhite);
   text_layer_set_background_color(input_message_layer, GColorWhite);
   text_layer_set_background_color(output_text_layer, GColorWhite);
-  */ 
-  //text_layer_set_background_color(output_message_layer, GColorBlack);
+  text_layer_set_background_color(output_message_layer, GColorBlack);
+  */
+
 
   // Add each layer to the window object
   layer_add_child(window_layer, text_layer_get_layer(input_text_layer));
@@ -116,58 +131,94 @@ static void window_unload(Window *window) {
   text_layer_destroy(output_text_layer);
   text_layer_destroy(output_message_layer);
 }
+// -------------------------------------------------------------------------------------------------------
+//                           End: The Main Screen: Windows Load and Unload
+// -------------------------------------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------
+//                                       The Logo Screen
+// -------------------------------------------------------------------------------------------------------
 
-
-
+// Load the logo window
 static void logoWindow_load(Window *logoWindow) {
   Layer *window_layer = window_get_root_layer(window);
 }
-
+// Unload the logo window
 static void logoWindow_unload(Window *logoWindow) {
 
 }
 
 static void logoInit(void) {
+  // Create a window for logo screen
   logoWindow = window_create();
   //window_set_fullscreen(logoWindow, true);
+
+  //Set handler
   window_set_window_handlers(logoWindow, (WindowHandlers) {
+    // The two functions above
     .load = logoWindow_load,
     .unload = logoWindow_unload,
   });
-  //------------------------------
-
-
-
-  //------------------------------
-  window_destroy(window);
 }
-static void init(void) {
+
+// Clean up logo screen
+static void deinitLogo(void) {
+  window_destroy(logoWindow);
+}
+// -------------------------------------------------------------------------------------------------------
+//                                       End: The Logo Screen
+// -------------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------------
+//                                       The Main Screen
+// -------------------------------------------------------------------------------------------------------
+static void mainInit(void) {
+  //Create window for main screen
   window = window_create();
+  // Tell which buttons settings to use for main screen
   window_set_click_config_provider(window, click_config_provider);
   //window_set_fullscreen(window, true); // Fullscreen - No status bar
   window_set_window_handlers(window, (WindowHandlers) {
+    // These functions are to load and unload- Located above
     .load = window_load,
     .unload = window_unload,
   });
+
+
   const bool animated = true;
   window_stack_push(window, animated);
 }
 
-static void deinit(void) {
+// To clean up the main screen
+static void deinitMain(void) {
   window_destroy(window);
 }
+
+// -------------------------------------------------------------------------------------------------------
+//                                        End: The Main Screen
+// -------------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------------
+//                                        Main Function
+// -------------------------------------------------------------------------------------------------------
 
 // Main function 
 int main(void) {
   // Do set up here
+  // Go to logo screen
   logoInit();
-  init();
-
+  // Clean up the logo screen
+  deinitLogo();
+  // Go to the main screen 
+  mainInit();
+  // For debuggin
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Done initializing, pushed window: %p", window);
   // Enter the main event loop. This will block until the app is ready to exit.
   app_event_loop();
-  // Do clean up here
-  deinit();
+  // Do clean up main screen
+  deinitMain();
 }
+
+// -------------------------------------------------------------------------------------------------------
+//                                        End: Main Function
+// -------------------------------------------------------------------------------------------------------
