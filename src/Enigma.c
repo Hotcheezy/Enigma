@@ -17,15 +17,16 @@ static TextLayer *input_message_layer;
 static TextLayer *output_message_layer;
 
 // List of the alphabet
-char *inputText[26] = {"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
+const char *inputText[26] = {"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
                        "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};     
 
-char *outputText[26] = {"A","Q","U","B","C","R","S","U","V","T","D","E","I",
+const char *outputText[26] = {"A","Q","U","B","C","R","S","U","V","T","D","E","I",
                        "Y","Z","F","G","J","K","L","M","N","O","P","Q","W"}; 
 
 // Message holder for input and output    
-char *inputMessage = " ";
-char *outputMessage = "A";
+char *inputMessage = "Input: ";
+char *outputMessage = "Output: ";
+
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
@@ -48,6 +49,17 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 // When UP button is clicked
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) { 
+  // The input letter decrements with each up clicks therefore a counter
+  textCounter--;
+  text_layer_set_text(input_text_layer, inputText[textCounter]);
+
+  // If the counter has reached the below zero
+  if(textCounter < 0){
+    // Set the counter to Z
+    textCounter = 25;
+    // Update the input text layer
+    text_layer_set_text(input_text_layer, inputText[textCounter]);
+  }
 }
 
 // When DOWN button is clicked
@@ -84,18 +96,16 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
   // Load the fonts
-  GFont textFont = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK);
-  GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14);
 
-  // Create layers for each
-  input_text_layer = text_layer_create((GRect) { .origin = { -40, 120 }, .size = { 130, 110 } });
+  GFont textFont = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK); //Font for Text input
+  GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14); // Font for message input
+
+  // Create layers for each and define the positions and size
+  input_text_layer = text_layer_create((GRect) { .origin = { -40, 120 }, .size = { 130, 110 } }); 
   input_message_layer = text_layer_create((GRect) { .origin = { 60, 90 }, .size = { 85, 90 } });
   output_text_layer = text_layer_create((GRect) { .origin = { 0, 10 }, .size = { 50, 70 } });
   output_message_layer = text_layer_create((GRect) { .origin = { 60, 10 }, .size = { 80, 70 } });
- 
-  // Set inital text for input field as "A"
-  text_layer_set_text(input_text_layer, inputText[0]);
-  
+
   //Setting fonts
   text_layer_set_font(input_text_layer, textFont);
   text_layer_set_font(input_message_layer, messageFont);
@@ -114,6 +124,11 @@ static void window_load(Window *window) {
   text_layer_set_background_color(output_text_layer, GColorWhite);
   text_layer_set_background_color(output_message_layer, GColorBlack);
   */
+
+    // Set inital text for input field as "A"
+  text_layer_set_text(input_text_layer, inputText[0]);
+  text_layer_set_text(input_message_layer,inputMessage);
+  text_layer_set_text(output_message_layer,outputMessage);
 
 
   // Add each layer to the window object
