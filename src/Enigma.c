@@ -56,6 +56,7 @@ int textCounter = 0;
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   // Change the text for each input and output 
   text_layer_set_text(input_message_layer, strcat(inputMessage,inputText[textCounter]));
+  // Change this part later to use the EnigmaAlgorthm 
   text_layer_set_text(output_message_layer, strcat(outputMessage,outputText[textCounter]));
   text_layer_set_text(output_text_layer, outputText[textCounter]);
 }
