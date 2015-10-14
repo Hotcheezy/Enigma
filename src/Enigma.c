@@ -1,11 +1,24 @@
+//=======================================================================================================
+// Project: Enigma 1.0v
+// Description: Enigma Machine on Pebble Watch
+//
+// Built using Pebble SDK 3.4v
+// Date: October 14, 2015
+//
+// Programmer: Peter Leng, Kent Liu
+// MIT Licence
+// ======================================================================================================
+
 // Libraries
 #include <pebble.h>
 #include <string.h>
 
 
+
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
+
 // Windows 
 static Window *window;
 static Window *logoWindow;
