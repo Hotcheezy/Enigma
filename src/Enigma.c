@@ -42,8 +42,8 @@ int textCounter = 0;
 // When SELECT button is clicked
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   // Change the text for each input and output 
-  text_layer_set_text(input_message_layer,strcat(inputMessage,inputText[textCounter]));
-  text_layer_set_text(output_message_layer,strcat(outputMessage,outputText[textCounter]));
+  text_layer_set_text(input_message_layer, strcat(inputMessage,inputText[textCounter]));
+  text_layer_set_text(output_message_layer, strcat(outputMessage,outputText[textCounter]));
   text_layer_set_text(output_text_layer, outputText[textCounter]);
 }
 
@@ -51,8 +51,6 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) { 
   // The input letter decrements with each up clicks therefore a counter
   textCounter--;
-  text_layer_set_text(input_text_layer, inputText[textCounter]);
-
   // If the counter has reached the below zero
   if(textCounter < 0){
     // Set the counter to Z
@@ -60,14 +58,13 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
     // Update the input text layer
     text_layer_set_text(input_text_layer, inputText[textCounter]);
   }
+  text_layer_set_text(input_text_layer, inputText[textCounter]);
 }
 
 // When DOWN button is clicked
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   // The input letter increments with each down clicks therefore a counter
   textCounter++;
-  text_layer_set_text(input_text_layer, inputText[textCounter]);
-
   // If the counter has reached the end 
   if(textCounter >= 26){
     // Set the counter to A
@@ -75,6 +72,7 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
     // Update the input text layer
     text_layer_set_text(input_text_layer, inputText[textCounter]);
   }
+  text_layer_set_text(input_text_layer, inputText[textCounter]);
 }
 
 // The button mapping for the main screen
