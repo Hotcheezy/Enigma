@@ -29,16 +29,22 @@ static TextLayer *output_text_layer;
 static TextLayer *input_message_layer;
 static TextLayer *output_message_layer;
 
-// List of the alphabet
-const char *inputText[26] = {"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
-                       "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};     
+// 'A','B','C','D','E','F','G','H','I','J','K','L','M',                                   
+//                       'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
 
-const char *outputText[26] = {"A","Q","U","B","C","R","S","U","V","T","D","E","I",
-                       "Y","Z","F","G","J","K","L","M","N","O","P","Q","W"}; 
+
+//"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
+//                       "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+// List of the alphabet
+char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
+
+char outputText[26] = {"KMFLGDQVZNTOWYHXUSPAIBRCJ"}; 
+char inputHolder[1];
+char outputHolder[1];
 
 // Message holder for input and output    
-char *inputMessage = "Input: ";
-char *outputMessage = "Output: ";
+char inputMessage[51] = "Input: ";
+char outputMessage[51] = "Output: ";
 
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
@@ -54,11 +60,23 @@ int textCounter = 0;
 
 // When SELECT button is clicked
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
-  // Change the text for each input and output 
-  text_layer_set_text(input_message_layer, strcat(inputMessage,inputText[textCounter]));
-  // Change this part later to use the EnigmaAlgorthm 
-  text_layer_set_text(output_message_layer, strcat(outputMessage,outputText[textCounter]));
-  text_layer_set_text(output_text_layer, outputText[textCounter]);
+   // Change the text for each input and output
+  // Add a char to input text
+  unsigned int l = strlen(inputMessage);
+  if(l<sizeof(inputMessage)-1) { // Check we have enough room left for an extra character
+    inputMessage[l] = inputText[textCounter];
+    inputMessage[l+1] = 0;
+    text_layer_set_text(input_message_layer, inputMessage);
+  }
+  // Add a char to output text
+  unsigned int J = strlen(outputMessage);
+  if(J<sizeof(outputMessage)-1) { // Check we have enough room left for an extra character
+    outputMessage[J] = outputText[textCounter];
+    outputMessage[J+1] = 0;
+    text_layer_set_text(output_message_layer, outputMessage);
+  }
+  //outputHolder[0] = outputText[textCounter];
+  //text_layer_set_text(output_text_layer, outputHolder);
 }
 
 // When UP button is clicked
@@ -69,10 +87,11 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   if(textCounter < 0){
     // Set the counter to Z
     textCounter = 25;
-    // Update the input text layer
-    text_layer_set_text(input_text_layer, inputText[textCounter]);
   }
-  text_layer_set_text(input_text_layer, inputText[textCounter]);
+  // A temp holder for the input text
+  inputHolder[0] = inputText[textCounter];
+  // Update the input text layer with the holder
+  text_layer_set_text(input_text_layer, inputHolder);
 }
 
 // When DOWN button is clicked
@@ -83,10 +102,9 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   if(textCounter >= 26){
     // Set the counter to A
     textCounter = 0;
-    // Update the input text layer
-    text_layer_set_text(input_text_layer, inputText[textCounter]);
   }
-  text_layer_set_text(input_text_layer, inputText[textCounter]);
+  inputHolder[0] = inputText[textCounter];
+  text_layer_set_text(input_text_layer, inputHolder);
 }
 
 // The button mapping for the main screen
@@ -137,8 +155,9 @@ static void window_load(Window *window) {
   text_layer_set_background_color(output_message_layer, GColorBlack);
   */
 
-    // Set inital text for input field as "A"
-  text_layer_set_text(input_text_layer, inputText[0]);
+  // Set inital text for input field as "A"
+  inputHolder[0] = inputText[0];
+  text_layer_set_text(input_text_layer, inputHolder);
   text_layer_set_text(input_message_layer,inputMessage);
   text_layer_set_text(output_message_layer,outputMessage);
 
