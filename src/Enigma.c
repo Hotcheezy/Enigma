@@ -29,22 +29,16 @@ static TextLayer *output_text_layer;
 static TextLayer *input_message_layer;
 static TextLayer *output_message_layer;
 
-// 'A','B','C','D','E','F','G','H','I','J','K','L','M',                                   
-//                       'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
-
-
-//"A","B","C","D","E","F","G","H","I","J","K","L","M",                                   
-//                       "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
 // List of the alphabet
 char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
-
-char outputText[26] = {"KMFLGDQVZNTOWYHXUSPAIBRCJ"}; 
+char outputText[26] = {"EKMFLGDQVZNTOWYHXUSPAIBRCJ"}; //Corresponding letter
+// Temporary holders for the input and output
 char inputHolder[1];
 char outputHolder[1];
 
 // Message holder for input and output    
-char inputMessage[51] = "Input: ";
-char outputMessage[51] = "Output: ";
+char inputMessage[51] = "";
+char outputMessage[51] = "";
 
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
@@ -75,8 +69,9 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     outputMessage[J+1] = 0;
     text_layer_set_text(output_message_layer, outputMessage);
   }
-  //outputHolder[0] = outputText[textCounter];
-  //text_layer_set_text(output_text_layer, outputHolder);
+  
+  outputHolder[0] = outputText[textCounter];
+  text_layer_set_text(output_text_layer, outputHolder);
 }
 
 // When UP button is clicked
@@ -103,7 +98,9 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
     // Set the counter to A
     textCounter = 0;
   }
+  // A temp holder for the input text
   inputHolder[0] = inputText[textCounter];
+  // Update the input text layer with the holder
   text_layer_set_text(input_text_layer, inputHolder);
 }
 
@@ -148,7 +145,6 @@ static void window_load(Window *window) {
 
   /*   
   // Set the color for each field. Default is white
-
   text_layer_set_background_color(input_text_layer, GColorWhite);
   text_layer_set_background_color(input_message_layer, GColorWhite);
   text_layer_set_background_color(output_text_layer, GColorWhite);
