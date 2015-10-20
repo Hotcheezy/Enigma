@@ -62,15 +62,16 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     inputMessage[l+1] = 0;
     text_layer_set_text(input_message_layer, inputMessage);
   }
-  // Add a char to output text
-  unsigned int J = strlen(outputMessage);
+  // Add a char to output text 
+  unsigned int J = strlen(outputMessage); // Can remove if the the input and output buffer is the same length
   if(J<sizeof(outputMessage)-1) { // Check we have enough room left for an extra character
     outputMessage[J] = outputText[textCounter];
     outputMessage[J+1] = 0;
     text_layer_set_text(output_message_layer, outputMessage);
   }
-  
+  // A temp holder for the output text
   outputHolder[0] = outputText[textCounter];
+  // Update the output text layer with the output holder
   text_layer_set_text(output_text_layer, outputHolder);
 }
 
