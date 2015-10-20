@@ -33,8 +33,8 @@ static TextLayer *output_message_layer;
 char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 char outputText[26] = {"EKMFLGDQVZNTOWYHXUSPAIBRCJ"}; //Corresponding letter
 // Temporary holders for the input and output
-char inputHolder[1];
-char outputHolder[1];
+char inputHolder[2] = " ";
+char outputHolder[2] = " ";
 
 // Message holder for input and output    
 char inputMessage[51] = "";
