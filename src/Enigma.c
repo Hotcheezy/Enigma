@@ -37,11 +37,15 @@ static TextLayer *output_message_layer;
 // The output test for the rotator 
 static TextLayer *rotatorText1_layer;
 static TextLayer *rotatorText2_layer;
-static TextLayer *rotatorText3_layer;
+static TextLayer *rotatorText3_layer;                                                                                                             
 
-// Logo variables
+// Image variables
 static GBitmap *logo_bitmap; //GBitmap pointer
 static BitmapLayer *logo_layer; //logo layer pointer
+
+static GBitmap *frame_bitmap;
+static BitmapLayer *frame_layer;
+
 // List of the alphabet
 char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 char outputText[26] = {"EKMFLGDQVZNTOWYHXUSPAIBRCJ"}; //Corresponding letter
@@ -158,18 +162,18 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
   // Load the fonts
 
-  GFont textFont = fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK); //Font for Text input
-  GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14); // Font for message input
+  GFont textFont = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD); //Font for Text input
+  GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD); // Font for message input
 
   // Create layers for each and define the positions and size
-  input_text_layer = text_layer_create((GRect) { .origin = { 5, 110 }, .size = { 50, 50 } }); 
+  input_text_layer = text_layer_create((GRect) { .origin = { 14.5, 109 }, .size = { 28, 28 } }); 
   input_message_layer = text_layer_create((GRect) { .origin = { 60, 90 }, .size = { 85, 80 } });
-  output_text_layer = text_layer_create((GRect) { .origin = { 5, 10 }, .size = { 50, 50 } });
+  output_text_layer = text_layer_create((GRect) { .origin = { 14.5, 14 }, .size = { 28, 28 } });
   output_message_layer = text_layer_create((GRect) { .origin = { 60, 0 }, .size = { 85, 80 } });
 
-  rotatorText1_layer = text_layer_create((GRect) { .origin = { 7.5, 70 }, .size = { 15, 15 } });
-  rotatorText2_layer = text_layer_create((GRect) { .origin = { 22.5, 70 }, .size = { 15, 15 } });
-  rotatorText3_layer = text_layer_create((GRect) { .origin = { 37.5, 70 }, .size = { 15, 15 } }); 
+  rotatorText1_layer = text_layer_create((GRect) { .origin = { 6.5, 70 }, .size = { 15, 15 } });
+  rotatorText2_layer = text_layer_create((GRect) { .origin = { 21.5, 70 }, .size = { 15, 15 } });
+  rotatorText3_layer = text_layer_create((GRect) { .origin = { 36.5, 70 }, .size = { 15, 15 } }); 
   //Setting fonts
   text_layer_set_font(input_text_layer, textFont);
   text_layer_set_font(input_message_layer, messageFont);
@@ -212,8 +216,19 @@ static void window_load(Window *window) {
   text_layer_set_text(rotatorText2_layer, "A");
   text_layer_set_text(rotatorText3_layer, "A");
 
+  // The frame image
+  frame_bitmap = gbitmap_create_with_resource(RESOURCE_ID_FRAME);
+  // Add the layer for which the bitmap will say on top of
+  // Also set the frame coordinates
+  frame_layer = bitmap_layer_create(GRect(0, 0, 144, 168));
+  // Set the outside of the image to be transparent
+  bitmap_layer_set_compositing_mode(frame_layer, GCompOpSet);
+  // Put the bitmap into the layer
+  bitmap_layer_set_bitmap(frame_layer, frame_bitmap);
+
 
   // Add each layer to the window object
+  layer_add_child(window_layer, bitmap_layer_get_layer(frame_layer));
   layer_add_child(window_layer, text_layer_get_layer(input_text_layer));
   layer_add_child(window_layer, text_layer_get_layer(input_message_layer));
   layer_add_child(window_layer, text_layer_get_layer(output_text_layer));
@@ -222,6 +237,7 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(rotatorText1_layer));
   layer_add_child(window_layer, text_layer_get_layer(rotatorText2_layer));;
   layer_add_child(window_layer, text_layer_get_layer(rotatorText3_layer));
+
 
 }
 

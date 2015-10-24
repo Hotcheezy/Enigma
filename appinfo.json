@@ -20,6 +20,12 @@
         "type": "png",
         "name": "LOGO",
         "file": "enigma.png"
+     },
+     {
+        "menuIcon": false,
+        "type": "png",
+        "name": "FRAME",
+        "file": "frame.png"
      }
     ]
   }
