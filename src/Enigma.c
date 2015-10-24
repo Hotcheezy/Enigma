@@ -19,7 +19,7 @@
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
 //-----Config --------
-#define DELAYTIME 3000
+#define DELAYTIME 500
 
 //-End-Config --------
 
@@ -30,8 +30,14 @@ static Window *logoWindow;
 // Textlayers 
 static TextLayer *input_text_layer; 
 static TextLayer *output_text_layer;   
+
 static TextLayer *input_message_layer;
 static TextLayer *output_message_layer;
+
+// The output test for the rotator 
+static TextLayer *rotatorText1_layer;
+static TextLayer *rotatorText2_layer;
+static TextLayer *rotatorText3_layer;
 
 // Logo variables
 static GBitmap *logo_bitmap; //GBitmap pointer
@@ -116,8 +122,16 @@ static void back_click_handler(ClickRecognizerRef recognizer, void *context) {
   // Get the current length
   unsigned int l = strlen(inputMessage);
   // Shorten the length by 1 and put the end string character 
-  inputMessage[l-1] = '\0';
-  outputMessage[l-1] = '\0';
+  // If the length is not zero 
+  if (l != 0){
+    inputMessage[l-1] = '\0';
+    outputMessage[l-1] = '\0';
+  }
+  // If the length is zero then just set that one to be end character
+  else{
+    inputMessage[l] = '\0';
+    outputMessage[l] = '\0';
+  }
   // Update the new text
   text_layer_set_text(input_message_layer, inputMessage);
   text_layer_set_text(output_message_layer, outputMessage);
@@ -148,27 +162,44 @@ static void window_load(Window *window) {
   GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14); // Font for message input
 
   // Create layers for each and define the positions and size
-  input_text_layer = text_layer_create((GRect) { .origin = { -40, 120 }, .size = { 130, 110 } }); 
-  input_message_layer = text_layer_create((GRect) { .origin = { 60, 90 }, .size = { 85, 90 } });
-  output_text_layer = text_layer_create((GRect) { .origin = { 0, 10 }, .size = { 50, 70 } });
-  output_message_layer = text_layer_create((GRect) { .origin = { 60, 10 }, .size = { 80, 70 } });
+  input_text_layer = text_layer_create((GRect) { .origin = { 5, 110 }, .size = { 50, 50 } }); 
+  input_message_layer = text_layer_create((GRect) { .origin = { 60, 90 }, .size = { 85, 80 } });
+  output_text_layer = text_layer_create((GRect) { .origin = { 5, 10 }, .size = { 50, 50 } });
+  output_message_layer = text_layer_create((GRect) { .origin = { 60, 0 }, .size = { 85, 80 } });
 
+  rotatorText1_layer = text_layer_create((GRect) { .origin = { 7.5, 70 }, .size = { 15, 15 } });
+  rotatorText2_layer = text_layer_create((GRect) { .origin = { 22.5, 70 }, .size = { 15, 15 } });
+  rotatorText3_layer = text_layer_create((GRect) { .origin = { 37.5, 70 }, .size = { 15, 15 } }); 
   //Setting fonts
   text_layer_set_font(input_text_layer, textFont);
   text_layer_set_font(input_message_layer, messageFont);
   text_layer_set_font(output_text_layer, textFont);
   text_layer_set_font(output_message_layer, messageFont);
 
+  text_layer_set_font(rotatorText1_layer, messageFont);
+  text_layer_set_font(rotatorText2_layer, messageFont);
+  text_layer_set_font(rotatorText3_layer, messageFont);
+
+
   // Center the input and output text field
   text_layer_set_text_alignment(input_text_layer, GTextAlignmentCenter);
   text_layer_set_text_alignment(output_text_layer, GTextAlignmentCenter);
 
-  /*   
-  // Set the color for each field. Default is white
-  text_layer_set_background_color(input_text_layer, GColorWhite);
-  text_layer_set_background_color(input_message_layer, GColorWhite);
-  text_layer_set_background_color(output_text_layer, GColorWhite);
+  text_layer_set_text_alignment(rotatorText1_layer, GTextAlignmentCenter);
+  text_layer_set_text_alignment(rotatorText2_layer, GTextAlignmentCenter);
+  text_layer_set_text_alignment(rotatorText3_layer, GTextAlignmentCenter);
+   
+  /*
+  // Set the color for each field. Default is white 
+  // Used for repostioning the layers. Since black is easy to see
+  text_layer_set_background_color(input_text_layer, GColorBlack);
+  text_layer_set_background_color(input_message_layer, GColorBlack);
+  text_layer_set_background_color(output_text_layer, GColorBlack);
   text_layer_set_background_color(output_message_layer, GColorBlack);
+  // The rotators
+  text_layer_set_background_color(rotatorText1_layer, GColorBlack);
+  text_layer_set_background_color(rotatorText2_layer, GColorBlack);
+  text_layer_set_background_color(rotatorText3_layer, GColorBlack);
   */
 
   // Set inital text for input field as "A"
@@ -177,12 +208,20 @@ static void window_load(Window *window) {
   text_layer_set_text(input_message_layer,inputMessage);
   text_layer_set_text(output_message_layer,outputMessage);
 
+  text_layer_set_text(rotatorText1_layer, "A");
+  text_layer_set_text(rotatorText2_layer, "A");
+  text_layer_set_text(rotatorText3_layer, "A");
+
 
   // Add each layer to the window object
   layer_add_child(window_layer, text_layer_get_layer(input_text_layer));
   layer_add_child(window_layer, text_layer_get_layer(input_message_layer));
   layer_add_child(window_layer, text_layer_get_layer(output_text_layer));
   layer_add_child(window_layer, text_layer_get_layer(output_message_layer));
+
+  layer_add_child(window_layer, text_layer_get_layer(rotatorText1_layer));
+  layer_add_child(window_layer, text_layer_get_layer(rotatorText2_layer));;
+  layer_add_child(window_layer, text_layer_get_layer(rotatorText3_layer));
 
 }
 
@@ -192,6 +231,9 @@ static void window_unload(Window *window) {
   text_layer_destroy(input_message_layer);
   text_layer_destroy(output_text_layer);
   text_layer_destroy(output_message_layer);
+  text_layer_destroy(rotatorText1_layer);
+  text_layer_destroy(rotatorText2_layer);
+  text_layer_destroy(rotatorText3_layer);
 }
 // -------------------------------------------------------------------------------------------------------
 //                           End: The Main Screen: Windows Load and Unload
@@ -207,7 +249,7 @@ static void window_unload(Window *window) {
 * pop the window it is currently on. This is used for the splash screen.
 * @param data
 */
-void timer_callback(void *data) {
+static void timer_callback(void *data) {
   window_stack_pop(true);
 }
 
@@ -221,7 +263,7 @@ static void logoWindow_load(Window *logoWindow) {
   // Match the bitmap with the image file
   logo_bitmap = gbitmap_create_with_resource(RESOURCE_ID_LOGO);
   // Add the layer for which the bitmap will say on top of
-  // Also set the frame points
+  // Also set the frame coordinates
   logo_layer = bitmap_layer_create(GRect(0, 0, 144, 168));
   // Set the outside of the image to be transparent
   bitmap_layer_set_compositing_mode(logo_layer, GCompOpSet);
