@@ -12,12 +12,16 @@
 // Libraries
 #include <pebble.h>
 #include <string.h>
-
+#include <time.h>
 
 
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
+//-----Config --------
+#define DELAYTIME 3000
+
+//-End-Config --------
 
 // Windows 
 static Window *window;
@@ -29,6 +33,9 @@ static TextLayer *output_text_layer;
 static TextLayer *input_message_layer;
 static TextLayer *output_message_layer;
 
+// Logo variables
+static GBitmap *logo_bitmap; //GBitmap pointer
+static BitmapLayer *logo_layer; //logo layer pointer
 // List of the alphabet
 char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 char outputText[26] = {"EKMFLGDQVZNTOWYHXUSPAIBRCJ"}; //Corresponding letter
@@ -182,32 +189,46 @@ static void window_unload(Window *window) {
 //                                       The Logo Screen
 // -------------------------------------------------------------------------------------------------------
 
+// This is the timer
+/**
+* This is the function the timer call after the time is up. It will
+* pop the window it is currently on. This is used for the splash screen.
+* @param data
+*/
+void timer_callback(void *data) {
+  window_stack_pop(true);
+}
+
 // Load the logo window
 static void logoWindow_load(Window *logoWindow) {
-  Layer *window_layer = window_get_root_layer(window);
+
+  // Set a 3000 millisecond to load the splash screen
+  app_timer_register(DELAYTIME, (AppTimerCallback) timer_callback, NULL);
+  // creat the layer
+  Layer *window_layer = window_get_root_layer(logoWindow);
+  // Match the bitmap with the image file
+  logo_bitmap = gbitmap_create_with_resource(RESOURCE_ID_LOGO);
+  // Add the layer for which the bitmap will say on top of
+  // Also set the frame points
+  logo_layer = bitmap_layer_create(GRect(0, 0, 144, 168));
+  // Set the outside of the image to be transparent
+  bitmap_layer_set_compositing_mode(logo_layer, GCompOpSet);
+  // Put the bitmap into the layer
+  bitmap_layer_set_bitmap(logo_layer, logo_bitmap);
+
+
+
+  // Add child
+  layer_add_child(window_layer, bitmap_layer_get_layer(logo_layer));
+
 }
 // Unload the logo window
 static void logoWindow_unload(Window *logoWindow) {
-
+  // Destry them when exit logo windows
+  gbitmap_destroy(logo_bitmap);
+  bitmap_layer_destroy(logo_layer);
 }
 
-static void logoInit(void) {
-  // Create a window for logo screen
-  logoWindow = window_create();
-  //window_set_fullscreen(logoWindow, true);
-
-  //Set handler
-  window_set_window_handlers(logoWindow, (WindowHandlers) {
-    // The two functions above
-    .load = logoWindow_load,
-    .unload = logoWindow_unload,
-  });
-}
-
-// Clean up logo screen
-static void deinitLogo(void) {
-  window_destroy(logoWindow);
-}
 // -------------------------------------------------------------------------------------------------------
 //                                       End: The Logo Screen
 // -------------------------------------------------------------------------------------------------------
@@ -218,22 +239,37 @@ static void deinitLogo(void) {
 static void mainInit(void) {
   //Create window for main screen
   window = window_create();
+    // Create a window for logo screen
+  logoWindow = window_create();
   // Tell which buttons settings to use for main screen
   window_set_click_config_provider(window, click_config_provider);
-  //window_set_fullscreen(window, true); // Fullscreen - No status bar
+
+  // The windows handlers for the main window
   window_set_window_handlers(window, (WindowHandlers) {
     // These functions are to load and unload- Located above
     .load = window_load,
     .unload = window_unload,
   });
 
+  // The window handlers for the logo windows
+  window_set_window_handlers(logoWindow, (WindowHandlers) {
+    // The two functions above
+    .load = logoWindow_load,
+    .unload = logoWindow_unload,
+  });
+
 
   const bool animated = true;
+  // Push the windows to the top
   window_stack_push(window, animated);
+  // Push the logo Window to the top
+  window_stack_push(logoWindow, true);
 }
+
 
 // To clean up the main screen
 static void deinitMain(void) {
+  // Destroy
   window_destroy(window);
 }
 
@@ -248,10 +284,6 @@ static void deinitMain(void) {
 // Main function 
 int main(void) {
   // Do set up here
-  // Go to logo screen
-  logoInit();
-  // Clean up the logo screen
-  deinitLogo();
   // Go to the main screen 
   mainInit();
   // For debuggin
