@@ -13,13 +13,13 @@
 #include <pebble.h>
 #include <string.h>
 #include <time.h>
-
+#include "settings/Settings.h" // The settings file
 
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
 //-----Config --------
-#define DELAYTIME 500
+#define DELAYTIME 500 //time for logo splashscreen in milisecons
 
 //-End-Config --------
 
@@ -140,6 +140,14 @@ static void back_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(input_message_layer, inputMessage);
   text_layer_set_text(output_message_layer, outputMessage);
 }
+// If the user long clicks or long clicks and release, go to the menu
+static void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
+  menu_push();
+}
+// This is the one for long click and release
+static void select_long_click_release_handler(ClickRecognizerRef recognizer, void *context) {
+  menu_push();
+}
 
 // The button mapping for the main screen
 static void click_config_provider(void *context) {
@@ -147,6 +155,11 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
   window_single_click_subscribe(BUTTON_ID_BACK, back_click_handler);
+  // If up, select, or down button is pressed go to long click handler
+  window_long_click_subscribe(BUTTON_ID_UP, 700, select_long_click_handler, select_long_click_release_handler);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 700, select_long_click_handler, select_long_click_release_handler);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 700, select_long_click_handler, select_long_click_release_handler);
+
 }
 // -------------------------------------------------------------------------------------------------------
 //                                End: The Main Screen: set button map
@@ -216,7 +229,7 @@ static void window_load(Window *window) {
   text_layer_set_text(rotatorText2_layer, "A");
   text_layer_set_text(rotatorText3_layer, "A");
 
-  // The frame image
+  // Set the frame image
   frame_bitmap = gbitmap_create_with_resource(RESOURCE_ID_FRAME);
   // Add the layer for which the bitmap will say on top of
   // Also set the frame coordinates
