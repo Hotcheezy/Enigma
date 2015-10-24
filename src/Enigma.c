@@ -111,12 +111,24 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   // Update the input text layer with the holder
   text_layer_set_text(input_text_layer, inputHolder);
 }
+// When the back button is clicked remove the last character from input and output message
+static void back_click_handler(ClickRecognizerRef recognizer, void *context) {
+  // Get the current length
+  unsigned int l = strlen(inputMessage);
+  // Shorten the length by 1 and put the end string character 
+  inputMessage[l-1] = '\0';
+  outputMessage[l-1] = '\0';
+  // Update the new text
+  text_layer_set_text(input_message_layer, inputMessage);
+  text_layer_set_text(output_message_layer, outputMessage);
+}
 
 // The button mapping for the main screen
 static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
+  window_single_click_subscribe(BUTTON_ID_BACK, back_click_handler);
 }
 // -------------------------------------------------------------------------------------------------------
 //                                End: The Main Screen: set button map
