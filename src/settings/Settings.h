@@ -3,7 +3,7 @@
 // Description: Enigma Machine on Pebble Watch
 // File: The settings.h file
 // Built using Pebble SDK 3.4v
-// Date: October 14, 2015
+// Date: October 25, 2015
 //
 // Programmer: Peter Leng, Kent Liu
 // MIT Licence

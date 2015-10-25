@@ -3,7 +3,7 @@
 // Description: Enigma Machine on Pebble Watch
 // File: The settings.c file
 // Built using Pebble SDK 3.4v
-// Date: October 14, 2015
+// Date: October 25, 2015
 //
 // Programmer: Peter Leng, Kent Liu
 // MIT Licence
@@ -11,7 +11,7 @@
 
 // Libraries
 #include "Settings.h"
-
+#include "rotatorSettings/rotatorSettings.h"
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_in
 static void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *context) {
   switch(cell_index->row) {
     case 0:
-      menu_cell_basic_draw(ctx, cell_layer, "Rotator", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Rotator Settings", NULL, NULL);
       break;
     case 1:
       menu_cell_basic_draw(ctx, cell_layer, "Plugboard", NULL, NULL);
@@ -60,7 +60,7 @@ static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex 
 static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
   switch(cell_index->row) {
     case 0: 
-      //rotator_windows_push();
+      rotator_settings_push();
       break;
     case 1:
       //plugboard_window_push();
@@ -72,7 +72,7 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
 
 // Header
 static void draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "Settings");
+  menu_cell_basic_header_draw(ctx, cell_layer, "General Settings");
 }
 // Returns the height of header
 static int16_t get_header_height_callback(struct MenuLayer *menu_layer, uint16_t section_index, void *context) {
@@ -109,6 +109,7 @@ static void window_load(Window *window) {
 static void window_unload(Window *window) {
   menu_layer_destroy(menu_layer);
   window_destroy(menu_window);
+  menu_window = NULL;
 }
 
 // -------------------------------------------------------------------------------------------------------

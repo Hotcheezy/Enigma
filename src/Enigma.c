@@ -3,7 +3,7 @@
 // Description: Enigma Machine on Pebble Watch
 //
 // Built using Pebble SDK 3.4v
-// Date: October 14, 2015
+// Date: October 15, 2015
 //
 // Programmer: Peter Leng, Kent Liu
 // MIT Licence
@@ -19,7 +19,7 @@
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
 //-----Config --------
-#define DELAYTIME 500 //time for logo splashscreen in milisecons
+#define DELAYTIME 2500 //time for logo splashscreen in milisecons
 
 //-End-Config --------
 
@@ -225,6 +225,7 @@ static void window_load(Window *window) {
   text_layer_set_text(input_message_layer,inputMessage);
   text_layer_set_text(output_message_layer,outputMessage);
 
+  // Set them to an initial state of 'A'
   text_layer_set_text(rotatorText1_layer, "A");
   text_layer_set_text(rotatorText2_layer, "A");
   text_layer_set_text(rotatorText3_layer, "A");
