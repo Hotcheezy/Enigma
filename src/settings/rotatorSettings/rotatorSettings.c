@@ -11,7 +11,7 @@
 
 // Libraries
 #include "rotatorSettings.h"
-
+#include "rotatorShift.h"
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex 
 static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
   switch(cell_index->row) {
     case 0: 
-      //rotator_settings_push();
+      rotator_shift_push();
       break;
     case 1:
       //plugboard_window_push();

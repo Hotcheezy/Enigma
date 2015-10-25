@@ -109,6 +109,7 @@ static void window_load(Window *window) {
 static void window_unload(Window *window) {
   menu_layer_destroy(menu_layer);
   window_destroy(menu_window);
+  // Makes sure to make this NULL othewise you cannot return here
   menu_window = NULL;
 }
 
