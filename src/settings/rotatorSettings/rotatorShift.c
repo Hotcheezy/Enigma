@@ -23,6 +23,10 @@ static Window *rotator_window;
 static TextLayer *rotatorText1_layer;
 static TextLayer *rotatorText2_layer;
 static TextLayer *rotatorText3_layer;     
+
+// Gear animation
+static GBitmapSequence *gear_sequence;
+static GBitmap *gear_bitmap;
 // -------------------------------------------------------------------------------------------------------
 //                                      End: Declare Variables
 // -------------------------------------------------------------------------------------------------------
@@ -67,9 +71,11 @@ static void rotateLoad(Window *window) {
   //Set the font
   GFont textFont = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD); //Font for Text input
 
-  rotatorText1_layer = text_layer_create((GRect) { .origin = { 15, 70 }, .size = { 30, 30 } });
-  rotatorText2_layer = text_layer_create((GRect) { .origin = { 55, 70 }, .size = { 30, 30 } });
-  rotatorText3_layer = text_layer_create((GRect) { .origin = { 95, 70 }, .size = { 30, 30 } }); 
+  rotatorText1_layer = text_layer_create((GRect) { .origin = { 5, 70 }, .size = { 30, 30 } });
+  rotatorText2_layer = text_layer_create((GRect) { .origin = { 45, 70 }, .size = { 30, 30 } });
+  rotatorText3_layer = text_layer_create((GRect) { .origin = { 85, 70 }, .size = { 30, 30 } }); 
+
+ 
 
   // Use the textFont for the rotors
   text_layer_set_font(rotatorText1_layer, textFont);
