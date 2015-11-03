@@ -25,8 +25,10 @@ static TextLayer *rotatorText2_layer;
 static TextLayer *rotatorText3_layer;     
 
 // Gear animation
+/*
 static GBitmapSequence *gear_sequence;
 static GBitmap *gear_bitmap;
+*/
 // -------------------------------------------------------------------------------------------------------
 //                                      End: Declare Variables
 // -------------------------------------------------------------------------------------------------------
