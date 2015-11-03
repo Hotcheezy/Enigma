@@ -24,7 +24,7 @@ static TextLayer *rotatorText1_layer;
 static TextLayer *rotatorText2_layer;
 static TextLayer *rotatorText3_layer;     
 
-// Gear animation
+//Gear animation
 /*
 static GBitmapSequence *gear_sequence;
 static GBitmap *gear_bitmap;
