@@ -46,6 +46,8 @@ static BitmapLayer *logo_layer; //logo layer pointer
 static GBitmap *frame_bitmap;
 static BitmapLayer *frame_layer;
 
+
+
 // List of the alphabet
 char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 char outputText[26] = {"EKMFLGDQVZNTOWYHXUSPAIBRCJ"}; //Corresponding letter

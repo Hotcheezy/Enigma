@@ -24,6 +24,8 @@ static TextLayer *rotatorText1_layer;
 static TextLayer *rotatorText2_layer;
 static TextLayer *rotatorText3_layer;     
 
+static TextLayer *label;  
+
 // Gear animation
 /*
 static GBitmapSequence *gear_sequence;
@@ -72,31 +74,41 @@ static void rotateLoad(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
   //Set the font
   GFont textFont = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD); //Font for Text input
+  GFont labelFont = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD); //Font for Text input
 
   rotatorText1_layer = text_layer_create((GRect) { .origin = { 5, 70 }, .size = { 30, 30 } });
   rotatorText2_layer = text_layer_create((GRect) { .origin = { 45, 70 }, .size = { 30, 30 } });
   rotatorText3_layer = text_layer_create((GRect) { .origin = { 85, 70 }, .size = { 30, 30 } }); 
 
- 
+  label = text_layer_create((GRect) { .origin = { 0, 0 }, .size = { 100, 40 } }); 
 
-  // Use the textFont for the rotors
+  // Set Font
   text_layer_set_font(rotatorText1_layer, textFont);
   text_layer_set_font(rotatorText2_layer, textFont);
   text_layer_set_font(rotatorText3_layer, textFont);
+
+  text_layer_set_font(label, labelFont);
+
 
   // Align them
   text_layer_set_text_alignment(rotatorText1_layer, GTextAlignmentCenter);
   text_layer_set_text_alignment(rotatorText2_layer, GTextAlignmentCenter);
   text_layer_set_text_alignment(rotatorText3_layer, GTextAlignmentCenter);
+  text_layer_set_text_alignment(label, GTextAlignmentCenter);
+
   // Set them to an initial state of 'A'
   text_layer_set_text(rotatorText1_layer, "A");
   text_layer_set_text(rotatorText2_layer, "A");
   text_layer_set_text(rotatorText3_layer, "A");
 
+  // Set the label text
+  text_layer_set_text(label, "Shift Rotors");
+
   // add the rotors to the windows layer
   layer_add_child(window_layer, text_layer_get_layer(rotatorText1_layer));
   layer_add_child(window_layer, text_layer_get_layer(rotatorText2_layer));
   layer_add_child(window_layer, text_layer_get_layer(rotatorText3_layer));
+  layer_add_child(window_layer, text_layer_get_layer(label));
 }
 
 
