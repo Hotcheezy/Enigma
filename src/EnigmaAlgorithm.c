@@ -29,6 +29,7 @@ VIII    FKQHTLXOCBJSPDZRAMEWNIUYGV  H/U     Z/M     A/N
 // -------------------------------------------------------------------------------------------------------
 //                                        Declare Variables
 // -------------------------------------------------------------------------------------------------------
+
 const char *rotor_ciphers[] = {
     "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 
     "AJDKSIRUXBLHWTMCQGZNPYFVOE",

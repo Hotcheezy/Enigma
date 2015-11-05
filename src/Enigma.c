@@ -14,6 +14,7 @@
 #include <string.h>
 #include <time.h>
 #include "settings/Settings.h" // The settings file
+//#include "EnigmaAlgorithm.h"
 
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
