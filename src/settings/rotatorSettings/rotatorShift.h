@@ -14,7 +14,7 @@
 #include <pebble.h>
 
 // Define
-#define NUM_CELLS 3
+#define NUM_CELLS 3 //number of cells in the shifting window
 
 // Pushed to the menu window
 void rotator_shift_push();

@@ -31,11 +31,11 @@ static GBitmap *gear_bitmap;
 // create a selection object 
 static Layer *selection;
 
-// List of the alphabet
+// Alphabet that the rotor cycles through
 char rotorLetters[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
-// Counter for each rotor for cycling the alphabet
+// Counter for each rotor for cycling the alphabet so we know where it's at 
 int rotorPostition[3] = {0,0,0};
-// Holder for each of the rotor postitions
+// A temp holder for each of the rotor postitions
 char positionHolder[3][2] = {" "," "," "};
 
 
@@ -52,7 +52,9 @@ char positionHolder[3][2] = {" "," "," "};
 static void selection_handle_complete(void *context) {
 }
 static void selection_handle_inc(int index, uint8_t clicks, void *context) {
-// The input letter increments with each down clicks therefore a counter
+  // The rotor position letter increments with each up clicks 
+  // The selectRotor variable is changed in the SelectionLayer file. Each time I
+  // Press the select or back button the select rotor will increment or decrement, respecitively
   rotorPostition[selectRotor]++;
   // If the counter has reached the end 
   if(rotorPostition[selectRotor] >= 26){
@@ -61,13 +63,15 @@ static void selection_handle_inc(int index, uint8_t clicks, void *context) {
   }
   // A temp holder for the input text
   positionHolder[selectRotor][0] = rotorLetters[rotorPostition[selectRotor]];
-  rotatorText[selectRotor][0] = positionHolder[selectRotor][0];
+  rotatorText[selectRotor][0] = positionHolder[selectRotor][0]; //Update the rotatorText global variable
   // Update the input text layer with the holder
   text_layer_set_text(rotatorText_layer[selectRotor], positionHolder[selectRotor]);
 }
 
 static void selection_handle_dec(int index, uint8_t clicks, void *context) {
-  // The input letter decrements with each up clicks therefore a counter
+  // The rotor position letter decrements with each up clicks 
+  // The selectRotor variable is changed in the SelectionLayer file. Each time I
+  // Press the select or back button the select rotor will increment or decrement, respecitively
   rotorPostition[selectRotor]--;
   // If the counter has reached the below zero
   if(rotorPostition[selectRotor] < 0){
@@ -76,7 +80,7 @@ static void selection_handle_dec(int index, uint8_t clicks, void *context) {
   }
   // A temp holder for the input text
   positionHolder[selectRotor][0] = rotorLetters[rotorPostition[selectRotor]];
-  rotatorText[selectRotor][0] = positionHolder[selectRotor][0];
+  rotatorText[selectRotor][0] = positionHolder[selectRotor][0]; //Update the rotatorText global variable
   // Update the input text layer with the holder
   text_layer_set_text(rotatorText_layer[selectRotor], positionHolder[selectRotor]);
 }
@@ -104,15 +108,15 @@ static void rotateLoad(Window *window) {
   GFont textFont = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD); //Font for Text input
   GFont labelFont = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD); //Font for Text input
 
+  // Set the position and the size of the layers
   rotatorText_layer[0] = text_layer_create((GRect) { .origin = { 13, 75 }, .size = { 30, 30 } });
   rotatorText_layer[1] = text_layer_create((GRect) { .origin = { 57, 75 }, .size = { 30, 30 } });
   rotatorText_layer[2] = text_layer_create((GRect) { .origin = { 100, 75 }, .size = { 30, 30 } }); 
-
   label = text_layer_create((GRect) { .origin = { 3, 0 }, .size = { 100, 40 } }); 
 
   // selection config
   // Create selection layer
-  #ifdef PBL_SDK_3
+  #ifdef PBL_SDK_3 // if it's the third version
     selection = selection_layer_create(GRect(8, 75, 128, 34), NUM_CELLS);
   #else
     selection = selection_layer_create(GRect(8, 60, 128, 34), NUM_CELLS);
@@ -138,7 +142,6 @@ static void rotateLoad(Window *window) {
   text_layer_set_font(rotatorText_layer[0], textFont);
   text_layer_set_font(rotatorText_layer[1], textFont);
   text_layer_set_font(rotatorText_layer[2], textFont);
-
   text_layer_set_font(label, labelFont);
 
 

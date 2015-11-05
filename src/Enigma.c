@@ -63,8 +63,8 @@ char inputMessage[51] = "";
 char outputMessage[51] = "";
 
 // holder for the rotatorText
-char rotatorText[3][2] = {"A","A","A"};
-char rotatorHolder[3][2] = {" "," "," "};
+char rotatorText[3][2] = {"A","A","A"}; // the text that will be displayed on screen
+char rotatorHolder[3][2] = {" "," "," "}; // A temp holder for transferring the rotator text
 
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
@@ -242,6 +242,7 @@ static void window_load(Window *window) {
   text_layer_set_text(input_message_layer,inputMessage);
   text_layer_set_text(output_message_layer,outputMessage);
 
+  // Put the text into the temp holder 
   rotatorHolder[0][0] = rotatorText[0][0];
   rotatorHolder[1][0] = rotatorText[1][0]; 
   rotatorHolder[2][0] = rotatorText[2][0]; 
