@@ -34,8 +34,6 @@ static Layer *selection;
 char rotorText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 // Counter for each rotor for cycling the alphabet
 int rotorPostition[3] = {0,0,0};
-// A counter for the rotor
-int selectRotor = 0;
 // Holder for each of the rotor postitions
 char positionHolder[3][2] = {" "," "," "};
 

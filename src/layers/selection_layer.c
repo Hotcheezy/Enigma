@@ -21,6 +21,8 @@
 #define SLIDE_DURATION_MS 107
 #define SLIDE_SETTLE_DURATION_MS 179
 
+// Variables
+int selectRotor = 0;
 // Function prototypes
 static Animation* prv_create_bump_settle_animation(Layer *layer);
 static Animation* prv_create_slide_settle_animation(Layer *layer);
@@ -499,6 +501,12 @@ void prv_select_click_handler(ClickRecognizerRef recognizer, void *context) {
       data->callbacks.complete(data->context);
     } else {
       data->slide_is_forward = true;
+      if(selectRotor >= 3){
+      // Set the counter to A
+        selectRotor = 3;
+      }
+      else
+        selectRotor++;
       prv_run_slide_animation(layer);
     }
   }
@@ -515,6 +523,7 @@ void prv_back_click_handler(ClickRecognizerRef recognizer, void *context) {
       window_stack_pop(true);
     } else {
       data->slide_is_forward = false;
+      selectRotor--;
       prv_run_slide_animation(layer);
     }
   }

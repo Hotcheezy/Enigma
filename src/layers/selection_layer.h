@@ -52,8 +52,11 @@ typedef struct SelectionLayerData {
   AnimationImplementation slide_amin_impl;
   int slide_settle_anim_progress;
   AnimationImplementation slide_settle_anim_impl;
-} SelectionLayerData;
 
+
+} SelectionLayerData;
+  // For the enigma 
+  extern int selectRotor;
 Layer* selection_layer_create(GRect frame, int num_cells);
 
 void selection_layer_destroy(Layer* layer);
