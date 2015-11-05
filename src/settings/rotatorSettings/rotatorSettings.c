@@ -12,6 +12,7 @@
 // Libraries
 #include "rotatorSettings.h"
 #include "rotatorShift.h"
+#include "rotatorType.h"
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
@@ -63,7 +64,7 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
       rotator_shift_push();
       break;
     case 1:
-      //plugboard_window_push();
+      rotator_type_push();
       break;
     default:
       break;

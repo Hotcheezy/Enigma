@@ -55,8 +55,7 @@ typedef struct SelectionLayerData {
 
 
 } SelectionLayerData;
-  // For the enigma 
-  extern int selectRotor;
+
 Layer* selection_layer_create(GRect frame, int num_cells);
 
 void selection_layer_destroy(Layer* layer);

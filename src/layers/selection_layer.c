@@ -2,6 +2,7 @@
 
 #include <pebble.h>
 #include "selection_layer.h"
+#include "../Enigma.h"
 
 // Look and feel
 #define DEFAULT_CELL_PADDING 10
@@ -23,6 +24,8 @@
 
 // Variables
 int selectRotor = 0;
+int selectType = 0;
+
 // Function prototypes
 static Animation* prv_create_bump_settle_animation(Layer *layer);
 static Animation* prv_create_slide_settle_animation(Layer *layer);
@@ -507,6 +510,13 @@ void prv_select_click_handler(ClickRecognizerRef recognizer, void *context) {
       }
       else
         selectRotor++;
+      // The selectType
+      if(selectType >= 3){
+      // Set the counter to A
+        selectType = 3;
+      }
+      else
+        selectType++;
       prv_run_slide_animation(layer);
     }
   }
@@ -524,6 +534,7 @@ void prv_back_click_handler(ClickRecognizerRef recognizer, void *context) {
     } else {
       data->slide_is_forward = false;
       selectRotor--;
+      selectType--;
       prv_run_slide_animation(layer);
     }
   }
