@@ -13,7 +13,9 @@
 #include <pebble.h>
 #include <string.h>
 #include <time.h>
+#include "Enigma.h"
 #include "settings/Settings.h" // The settings file
+
 //#include "EnigmaAlgorithm.h"
 
 // -------------------------------------------------------------------------------------------------------
@@ -60,8 +62,13 @@ char outputHolder[2] = " ";
 char inputMessage[51] = "";
 char outputMessage[51] = "";
 
+// holder for the rotatorText
+char rotatorText[3][2] = {"A","A","A"};
+char rotatorHolder[3][2] = {" "," "," "};
+
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
+
 
 
 // -------------------------------------------------------------------------------------------------------
@@ -235,10 +242,16 @@ static void window_load(Window *window) {
   text_layer_set_text(input_message_layer,inputMessage);
   text_layer_set_text(output_message_layer,outputMessage);
 
-  // Set them to an initial state of 'A'
-  text_layer_set_text(rotatorText1_layer, "A");
-  text_layer_set_text(rotatorText2_layer, "A");
-  text_layer_set_text(rotatorText3_layer, "A");
+  rotatorHolder[0][0] = rotatorText[0][0];
+  rotatorHolder[1][0] = rotatorText[1][0]; 
+  rotatorHolder[2][0] = rotatorText[2][0]; 
+
+  // Set rotators to an initial state of 'A'
+  text_layer_set_text(rotatorText1_layer, rotatorText[0]);
+  text_layer_set_text(rotatorText2_layer, rotatorText[1]);
+  text_layer_set_text(rotatorText3_layer, rotatorText[2]);
+
+
 
   // Set the frame image
   frame_bitmap = gbitmap_create_with_resource(RESOURCE_ID_FRAME);

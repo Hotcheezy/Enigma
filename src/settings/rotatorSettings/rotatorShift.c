@@ -12,6 +12,7 @@
 // Libraries
 #include "rotatorShift.h"
 #include "../../layers/selection_layer.h"
+#include "../../Enigma.h"
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
@@ -31,7 +32,7 @@ static GBitmap *gear_bitmap;
 static Layer *selection;
 
 // List of the alphabet
-char rotorText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
+char rotorLetters[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 // Counter for each rotor for cycling the alphabet
 int rotorPostition[3] = {0,0,0};
 // Holder for each of the rotor postitions
@@ -59,7 +60,8 @@ static void selection_handle_inc(int index, uint8_t clicks, void *context) {
     rotorPostition[selectRotor] = 0;
   }
   // A temp holder for the input text
-  positionHolder[selectRotor][0] = rotorText[rotorPostition[selectRotor]];
+  positionHolder[selectRotor][0] = rotorLetters[rotorPostition[selectRotor]];
+  rotatorText[selectRotor][0] = positionHolder[selectRotor][0];
   // Update the input text layer with the holder
   text_layer_set_text(rotatorText_layer[selectRotor], positionHolder[selectRotor]);
 }
@@ -73,7 +75,8 @@ static void selection_handle_dec(int index, uint8_t clicks, void *context) {
     rotorPostition[selectRotor] = 25;
   }
   // A temp holder for the input text
-  positionHolder[selectRotor][0] = rotorText[rotorPostition[selectRotor]];
+  positionHolder[selectRotor][0] = rotorLetters[rotorPostition[selectRotor]];
+  rotatorText[selectRotor][0] = positionHolder[selectRotor][0];
   // Update the input text layer with the holder
   text_layer_set_text(rotatorText_layer[selectRotor], positionHolder[selectRotor]);
 }
@@ -145,9 +148,9 @@ static void rotateLoad(Window *window) {
   text_layer_set_text_alignment(rotatorText_layer[2], GTextAlignmentCenter);
 
   // Set them to an initial state of 'A'
-  text_layer_set_text(rotatorText_layer[0], "A");
-  text_layer_set_text(rotatorText_layer[1], "A");
-  text_layer_set_text(rotatorText_layer[2], "A");
+  text_layer_set_text(rotatorText_layer[0], rotatorText[0]);
+  text_layer_set_text(rotatorText_layer[1], rotatorText[1]);
+  text_layer_set_text(rotatorText_layer[2], rotatorText[2]);
 
   // Set background color to transparent 
   text_layer_set_background_color(rotatorText_layer[0], GColorClear);
