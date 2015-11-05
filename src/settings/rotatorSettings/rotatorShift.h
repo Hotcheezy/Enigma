@@ -13,5 +13,8 @@
 
 #include <pebble.h>
 
+// Define
+#define NUM_CELLS 3
+
 // Pushed to the menu window
 void rotator_shift_push();

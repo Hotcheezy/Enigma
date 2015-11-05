@@ -209,7 +209,7 @@ static void window_load(Window *window) {
   text_layer_set_text_alignment(rotatorText2_layer, GTextAlignmentCenter);
   text_layer_set_text_alignment(rotatorText3_layer, GTextAlignmentCenter);
    
-  /*
+  /* For debugging
   // Set the color for each field. Default is white 
   // Used for repostioning the layers. Since black is easy to see
   text_layer_set_background_color(input_text_layer, GColorBlack);
@@ -221,6 +221,13 @@ static void window_load(Window *window) {
   text_layer_set_background_color(rotatorText2_layer, GColorBlack);
   text_layer_set_background_color(rotatorText3_layer, GColorBlack);
   */
+
+
+  // Set the background to be transparent
+  text_layer_set_background_color(input_text_layer, GColorClear);
+  text_layer_set_background_color(input_message_layer, GColorClear);
+  text_layer_set_background_color(output_text_layer, GColorClear);
+  text_layer_set_background_color(output_message_layer, GColorClear);
 
   // Set inital text for input field as "A"
   inputHolder[0] = inputText[0];
