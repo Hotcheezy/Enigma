@@ -31,10 +31,12 @@ static Layer *selection;
 // Alphabet that the rotor cycles through
 char rotorTypeLetter[8][2] = {"1","2","3","4","5","6","7","8"};    
 // Counter for each rotor for cycling the alphabet so we know where it's at 
+// There will always be 3 rotors in use so we set the unused to 5
+char unusedNumbers[5][2];
 int rotorTypePostition[3] = {0,0,0};
 // A temp holder for each of the rotor postitions
 char typePositionHolder[3][2] = {" "," "," "};
-char rotorType[3][2] = {"1","1","1"};
+char rotorType[3][2] = {"1","2","3"};
 
 
 

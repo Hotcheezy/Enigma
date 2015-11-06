@@ -9,21 +9,19 @@
 // MIT Licence
 // ======================================================================================================
 
+
+
 // Libraries
-#include "Settings.h"
-#include "rotatorSettings/rotatorSettings.h"
 #include "plugboard.h"
+
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
+static Window *plug_window;
+static MenuLayer *plug_layer;
 
-// Number of things to select in the menu
-#define NUM_WINDOWS 2
-
-// Windows and layer variables
-static Window *menu_window;
-static MenuLayer *menu_layer;
-
+char letters[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
+char textHolder[2] = " ";
 
 // -------------------------------------------------------------------------------------------------------
 //                                      End: Declare Variables
@@ -33,52 +31,27 @@ static MenuLayer *menu_layer;
 //                                      Declare functions
 // -------------------------------------------------------------------------------------------------------
 
-// Returns the number of rows
 static uint16_t get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
-  return NUM_WINDOWS;
+  return NUM_WINDOWS_PLUG;
 }
 
-// The row names
 static void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *context) {
-  switch(cell_index->row) {
-    case 0:
-      menu_cell_basic_draw(ctx, cell_layer, "Rotator Settings", NULL, NULL);
-      break;
-    case 1:
-      menu_cell_basic_draw(ctx, cell_layer, "Plugboard", NULL, NULL);
-      break;
-    default:
-      break;
-  }
+  textHolder[0] = letters[(int)cell_index->row];
+  menu_cell_basic_draw(ctx, cell_layer, textHolder, NULL, NULL);
 }
 
-// returns the height of the cell
 static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
-  return 30;
+  return CHECKBOX_WINDOW_CELL_HEIGHT;
 }
 
-// The row selector. It pushes to whichever window 
-static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
-  switch(cell_index->row) {
-    case 0: 
-      rotator_settings_push();
-      break;
-    case 1:
-      plugboard_window_push();
-      break;
-    default:
-      break;
-  }
-}
-
-// Header
 static void draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "General Settings");
+  menu_cell_basic_header_draw(ctx, cell_layer, "Choose a letter");
 }
-// Returns the height of header
+
 static int16_t get_header_height_callback(struct MenuLayer *menu_layer, uint16_t section_index, void *context) {
-  return 20;
+  return MENU_CELL_BASIC_HEADER_HEIGHT;
 }
+
 static uint16_t get_num_sections_callback(struct MenuLayer *menu_layer, void *context) {
   return 1;
 }
@@ -87,31 +60,26 @@ static uint16_t get_num_sections_callback(struct MenuLayer *menu_layer, void *co
 // -------------------------------------------------------------------------------------------------------
 //                                      Windows Load and Unload
 // -------------------------------------------------------------------------------------------------------
-
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  menu_layer = menu_layer_create(bounds);
-  menu_layer_set_click_config_onto_window(menu_layer, window);
-  menu_layer_set_callbacks(menu_layer, NULL, (MenuLayerCallbacks) {
+  plug_layer = menu_layer_create(bounds);
+  menu_layer_set_click_config_onto_window(plug_layer, window);
+  menu_layer_set_callbacks(plug_layer, NULL, (MenuLayerCallbacks) {
       .get_num_rows = (MenuLayerGetNumberOfRowsInSectionsCallback)get_num_rows_callback,
       .draw_row = (MenuLayerDrawRowCallback)draw_row_callback,
       .get_cell_height = (MenuLayerGetCellHeightCallback)get_cell_height_callback,
-      .select_click = (MenuLayerSelectCallback)select_callback,
       .draw_header = (MenuLayerDrawHeaderCallback)draw_header_callback,
       .get_header_height = (MenuLayerGetHeaderHeightCallback)get_header_height_callback,
       .get_num_sections = (MenuLayerGetNumberOfSectionsCallback)get_num_sections_callback,
   });
-  // Add menu to the windows layer
-  layer_add_child(window_layer, menu_layer_get_layer(menu_layer));
+  layer_add_child(window_layer, menu_layer_get_layer(plug_layer));
 }
 
 static void window_unload(Window *window) {
-  menu_layer_destroy(menu_layer);
-  window_destroy(menu_window);
-  // Makes sure to make this NULL othewise you cannot return here
-  menu_window = NULL;
+  menu_layer_destroy(plug_layer);
+  plug_window = NULL;
 }
 
 // -------------------------------------------------------------------------------------------------------
@@ -119,20 +87,18 @@ static void window_unload(Window *window) {
 // -------------------------------------------------------------------------------------------------------
 
 // The public function
-void menu_push() {
-  if (!menu_window){
-    menu_window = window_create();
-    window_set_window_handlers(menu_window, (WindowHandlers) {
+void plugboard_window_push(){
+  if (!plug_window){
+    plug_window = window_create();
+    window_set_window_handlers(plug_window, (WindowHandlers) {
       .load = window_load,
       .unload = window_unload,
     });
-    window_stack_push(menu_window, true);
+    window_stack_push(plug_window, true);
   }
   
 }
 
-
 // -------------------------------------------------------------------------------------------------------
 //                                      End: Functions
 // -------------------------------------------------------------------------------------------------------
-
