@@ -1,7 +1,7 @@
 //=======================================================================================================
 // Project: Enigma 1.0v
 // Description: Enigma Machine on Pebble Watch
-// File: The rotatorShift.c file
+// File: The plugboard.h file
 // Built using Pebble SDK 3.4v
 // Date: October 25, 2015
 //
@@ -13,7 +13,7 @@
 
 #include <pebble.h>
 
-#define NUM_WINDOWS_PLUG 26
+#define NUM_WINDOWS_PLUG 26 // number of windows for the plug window
 #define CHECKBOX_WINDOW_CELL_HEIGHT 30
 
 

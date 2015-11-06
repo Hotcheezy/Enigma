@@ -1,7 +1,7 @@
 //=======================================================================================================
 // Project: Enigma 1.0v
 // Description: Enigma Machine on Pebble Watch
-// File: The settings.c file
+// File: The plugboard.c file
 // Built using Pebble SDK 3.4v
 // Date: October 25, 2015
 //
