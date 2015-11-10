@@ -119,7 +119,6 @@ static void connect_letter(char selectLetter){
 
     }
   }
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "%i", plugUsed);
   int index = menu_layer_get_selected_index(plug_layer).row;
   plugConnectLetters[index][0] = selectLetter;
   menu_layer_reload_data(plug_layer);

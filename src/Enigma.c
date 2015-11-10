@@ -14,7 +14,9 @@
 #include <string.h>
 #include <time.h>
 #include "Enigma.h"
+#include "EnigmaAlgorithm.h"
 #include "settings/Settings.h" // The settings file
+
 
 //#include "EnigmaAlgorithm.h"
 
@@ -97,9 +99,11 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     text_layer_set_text(output_message_layer, outputMessage);
   }
   // A temp holder for the output text
-  outputHolder[0] = outputText[textCounter];
+  // using the calculate function in the Enigma Alg
+  outputHolder[0] = calculate(inputText[textCounter]);
   // Update the output text layer with the output holder
   text_layer_set_text(output_text_layer, outputHolder);
+
 }
 
 // When UP button is clicked
