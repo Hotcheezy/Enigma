@@ -51,13 +51,13 @@ const char *rotor_notches[] = {"Q", "E", "V", "J", "Z", "ZM", "ZM", "ZM"};
 
 const char *rotor_turnovers[] = {"R", "F", "W", "K", "A", "AN", "AN", "AN"};
 
-const char *reflectors[] = {
+extern char *reflectors[] = {
     "EJMZALYXVBWFCRQUONTSPIKHGD",
     "YRUHQSLDPXNGOKMIEBFZCWVJAT",
     "FVPJIAOYEDRZXWGCTKUQSBNMHL"
 };
 
-struct Rotor {
+extern struct Rotor {
     int             offset;
     int             turnnext;
     const char      *cipher;
@@ -65,7 +65,7 @@ struct Rotor {
     const char      *notch;
 };
 
-struct Enigma {
+extern struct Enigma {
     int             numrotors;
     const char      *reflector;
     struct Rotor    rotors[8];
@@ -167,17 +167,48 @@ int rotor_reverse(struct Rotor *rotor, int index) {
 // -------------------------------------------------------------------------------------------------------
 
 char calculate(char inputChar){
-	struct Enigma machine = {}; // initialized to defaults
-	int i, index;
 
-	// Configure an enigma machine
-    machine.reflector = reflectors[1];
-    machine.rotors[0] = new_rotor(&machine, rotorTypePostition[0], rotorPostition[0]);
-    machine.rotors[1] = new_rotor(&machine, rotorTypePostition[1], rotorPostition[1]);
-    machine.rotors[2] = new_rotor(&machine, rotorTypePostition[2], rotorPostition[2]);
+    index = str_index(alpha, inputChar);
 
+    // Cycle first rotor before pushing through,
+    rotor_cycle(&machine.rotors[0]);
 
-    index = str_index(alpha, character);
+    // Double step the rotor
+        if(str_index(machine.rotors[1].notch,
+                    alpha[machine.rotors[1].offset]) >= 0 ) {
+            rotor_cycle(&machine.rotors[1]);
+        }
+
+        // Stepping the rotors
+        for(i=0; i < machine.numrotors - 1; i++) {
+            inputChar = alpha[machine.rotors[i].offset];
+
+            if(machine.rotors[i].turnnext) {
+                machine.rotors[i].turnnext = 0;
+                rotor_cycle(&machine.rotors[i+1]);
+            }
+         }
+
+        // Pass through all the rotors forward
+        for(i=0; i < machine.numrotors; i++) {
+            index = rotor_forward(&machine.rotors[i], index);
+        }
+
+        // Inbound
+        character = machine.reflector[index];
+        // Outbound
+        index = str_index(alpha, inputChar);
+
+        // Pass back through the rotors in reverse
+        for(i = machine.numrotors - 1; i >= 0; i--) {
+            index = rotor_reverse(&machine.rotors[i], index);
+        }
+
+        // Pass through Plugboard
+        inputChar = alpha[index];
+
+        return inputChar;
+
 }
 
 // -------------------------------------------------------------------------------------------------------

@@ -71,6 +71,28 @@ char rotatorHolder[3][2] = {" "," "," "}; // A temp holder for transferring the 
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
+// Global 
+char *reflectors[] = {
+    "EJMZALYXVBWFCRQUONTSPIKHGD",
+    "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+    "FVPJIAOYEDRZXWGCTKUQSBNMHL"
+};
+
+struct Rotor {
+    int             offset;
+    int             turnnext;
+    const char      *cipher;
+    const char      *turnover;
+    const char      *notch;
+};
+
+struct Enigma {
+    int             numrotors;
+    const char      *reflector;
+    struct Rotor    rotors[8];
+};
+
+
 
 
 // -------------------------------------------------------------------------------------------------------
@@ -183,6 +205,18 @@ static void click_config_provider(void *context) {
 //                               The Main Screen: Windows Load and unload
 // -------------------------------------------------------------------------------------------------------
 static void window_load(Window *window) {
+  // Create Enigma instance
+  struct Enigma machine = {}; // initialized to defaults
+  int i, index;
+
+  // Configure an enigma machine
+  machine.reflector = reflectors[1];
+  machine.rotors[0] = new_rotor(&machine, rotorTypePostition[0], rotorPostition[0]);
+  machine.rotors[1] = new_rotor(&machine, rotorTypePostition[1], rotorPostition[1]);
+  machine.rotors[2] = new_rotor(&machine, rotorTypePostition[2], rotorPostition[2]);
+
+
+
 
   // Set layer 
   Layer *window_layer = window_get_root_layer(window);
@@ -267,6 +301,8 @@ static void window_load(Window *window) {
   bitmap_layer_set_compositing_mode(frame_layer, GCompOpSet);
   // Put the bitmap into the layer
   bitmap_layer_set_bitmap(frame_layer, frame_bitmap);
+
+
 
 
   // Add each layer to the window object
