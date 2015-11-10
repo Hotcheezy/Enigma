@@ -16,6 +16,7 @@ extern int rotorPostition[3]; // This is the rotor position for each individual 
 extern int rotorTypePostition[3];
 extern char rotorType[3][2]; // This will contain the type of rotor choosed. Each can contain a number from 1 to 8
 
+extern char plugConnectLetters[26][2]; // The letters that corresponds to another letter
 // For the enigma 
 extern int selectRotor;
 extern int selectType;
