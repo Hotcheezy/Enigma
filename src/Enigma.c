@@ -159,14 +159,27 @@ int str_index(const char *str, int character) {
 
     return index;
 }
-
+void rotorTypeCheck(){
+    for(int i =0; i < 3; i++){
+      machine.rotors[i].cipher = rotor_ciphers[rotorTypePostition[2-i] - 1];
+      machine.rotors[i].turnover = rotor_turnovers[rotorTypePostition[2-i] - 1];
+      machine.rotors[i].notch = rotor_notches[rotorTypePostition[2-i] - 1];
+    }
+}
 /*
  * Cycle a rotor's offset but keep it in the array.
  */
 void rotor_cycle(struct Rotor *rotor) {
+    // check and update the rotor type everythime
+    rotorTypeCheck();
+    // update the offset with the newest rotor position
+    rotor->offset = rotorPostition[rotor->rotornum];
     rotor->offset++;
+    // Also update the rotor Posiitions
+    rotorPostition[rotor->rotornum]++;
     rotatorText[rotor->rotornum][0]++;
     rotor->offset = rotor->offset % ROTATE;
+    rotorPostition[rotor->rotornum] = rotorPostition[rotor->rotornum] % ROTATE; 
     if(rotatorText[rotor->rotornum][0] > 'Z'){
       rotatorText[rotor->rotornum][0] = 'A';
     }
@@ -253,6 +266,8 @@ char calculate(char inputChar){
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Plugboard index %d", index);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Output character ******** %c", inputChar);
+
+    // out put the char for output
     return inputChar;
 
 }
