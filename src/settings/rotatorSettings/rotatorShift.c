@@ -34,7 +34,7 @@ static Layer *selection;
 // Alphabet that the rotor cycles through
 char rotorLetters[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
 // Counter for each rotor for cycling the alphabet so we know where it's at 
-int rotorPostition[3] = {0,0,0};
+int rotorPostition[3];
 // A temp holder for each of the rotor postitions
 char positionHolder[3][2] = {" "," "," "};
 

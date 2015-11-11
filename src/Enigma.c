@@ -14,7 +14,6 @@
 #include <string.h>
 #include <time.h>
 #include "Enigma.h"
-#include "EnigmaAlgorithm.h"
 #include "settings/Settings.h" // The settings file
 
 
@@ -25,6 +24,7 @@
 // -------------------------------------------------------------------------------------------------------
 //-----Config --------
 #define DELAYTIME 2500 //time for logo splashscreen in milisecons
+#define ROTATE 26
 
 //-End-Config --------
 
@@ -55,7 +55,6 @@ static BitmapLayer *frame_layer;
 
 // List of the alphabet
 char inputText[26] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"};    
-char outputText[26] = {"EKMFLGDQVZNTOWYHXUSPAIBRCJ"}; //Corresponding letter
 // Temporary holders for the input and output
 char inputHolder[2] = " ";
 char outputHolder[2] = " ";
@@ -68,19 +67,39 @@ char outputMessage[51] = "";
 char rotatorText[3][2] = {"A","A","A"}; // the text that will be displayed on screen
 char rotatorHolder[3][2] = {" "," "," "}; // A temp holder for transferring the rotator text
 
+int rotorPostition[3];
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
-// Global 
-char *reflectors[] = {
+
+
+// Algorithm Variables
+const char *reflectors[] = {
     "EJMZALYXVBWFCRQUONTSPIKHGD",
     "YRUHQSLDPXNGOKMIEBFZCWVJAT",
     "FVPJIAOYEDRZXWGCTKUQSBNMHL"
 };
 
+const char *alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const char *rotor_ciphers[] = {
+    "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 
+    "AJDKSIRUXBLHWTMCQGZNPYFVOE",
+    "BDFHJLCPRTXVZNYEIWGAKMUSQO",
+    "ESOVPZJAYQUIRHXLNFTGKDCMWB",
+    "VZBRGITYUPSDNHLXAWMJQOFECK",
+    "JPGVOUMFYQBENHZRDKASXLICTW",
+    "NZJHGRCXMYSWBOUFAIVLPEKQDT",
+    "FKQHTLXOCBJSPDZRAMEWNIUYGV"
+};
+
+const char *rotor_notches[] = {"Q", "E", "V", "J", "Z", "ZM", "ZM", "ZM"};
+
+const char *rotor_turnovers[] = {"R", "F", "W", "K", "A", "AN", "AN", "AN"};
+
 struct Rotor {
     int             offset;
     int             turnnext;
+    int             rotornum;
     const char      *cipher;
     const char      *turnover;
     const char      *notch;
@@ -92,11 +111,153 @@ struct Enigma {
     struct Rotor    rotors[8];
 };
 
+/*
+ * Produce a rotor object
+ * Setup the correct offset, cipher set and turn overs.
+ */
+struct Rotor new_rotor(struct Enigma *machine, int whichmotor, int rotornumber, int offset) {
+    struct Rotor r;
+    r.offset = offset;
+    r.turnnext = 0;
+    r.cipher = rotor_ciphers[rotornumber - 1];
+    r.turnover = rotor_turnovers[rotornumber - 1];
+    r.notch = rotor_notches[rotornumber - 1];
+    r.rotornum =  whichmotor;
+    machine->numrotors++;
+
+    return r;
+}
+// Create Enigma instance
+struct Enigma machine = {0}; // initialized to defaults
+
 
 
 
 // -------------------------------------------------------------------------------------------------------
 //                                      End: Declare Variables
+// -------------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------------
+//                                           Algorithm
+// -------------------------------------------------------------------------------------------------------
+
+/*
+ * Return the index position of a character inside a string
+ * if not found then -1
+ **/
+int str_index(const char *str, int character) {
+    char *pos;
+    int index;
+    pos = strchr(str, character);
+
+    // pointer arithmetic
+    if (pos){
+        index = (int) (pos - str);
+    } else {
+        index = -1;
+    }
+
+    return index;
+}
+
+/*
+ * Cycle a rotor's offset but keep it in the array.
+ */
+void rotor_cycle(struct Rotor *rotor) {
+    rotor->offset++;
+    rotatorText[rotor->rotornum][0]++;
+    rotor->offset = rotor->offset % ROTATE;
+    if(rotatorText[rotor->rotornum][0] > 'Z'){
+      rotatorText[rotor->rotornum][0] = 'A';
+    }
+    // Check if the notch is active, if so trigger the turnnext
+    if(str_index(rotor->turnover, alpha[rotor->offset]) >= 0) {
+        rotor->turnnext = 1;
+    }
+}
+
+/*
+ * Pass through a rotor, right to left, cipher to alpha.
+ * returns the exit index location.
+ */
+int rotor_forward(struct Rotor *rotor, int index) {
+
+    // In the cipher side, out the alpha side
+    index = (index + rotor->offset) % ROTATE;
+    index = str_index(alpha, rotor->cipher[index]);
+    index = (ROTATE + index - rotor->offset) % ROTATE;
+
+    return index;
+}
+
+/*
+ * Pass through a rotor, left to right, alpha to cipher.
+ * returns the exit index location.
+ */
+int rotor_reverse(struct Rotor *rotor, int index) {
+
+    // In the cipher side, out the alpha side
+    index = (index + rotor->offset) % ROTATE;
+    index = str_index(rotor->cipher, alpha[index]);
+    index = (ROTATE + index - rotor->offset) % ROTATE;
+
+    return index;
+
+}
+char calculate(char inputChar){
+    int j, index;
+    index = str_index(alpha, inputChar);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Index %i", index);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Input character ******** %c", inputChar);
+    // Cycle first rotor before pushing through,
+    rotor_cycle(&machine.rotors[0]);
+    // Double step the rotor
+    if(str_index(machine.rotors[1].notch, alpha[machine.rotors[1].offset]) >= 0 ) {
+       rotor_cycle(&machine.rotors[1]);
+    }
+
+    // Stepping the rotors
+    for(j=0; j < machine.numrotors - 1; j++) { 
+        inputChar = alpha[machine.rotors[j].offset];
+        if(machine.rotors[j].turnnext) {
+            machine.rotors[j].turnnext = 0;
+            rotor_cycle(&machine.rotors[j+1]);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Cycling  rotor :%d", j+1);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Turnover rotor :%d", j);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Character  is  :%c", inputChar);
+        }
+    }
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "1Into reflector %c", alpha[index]);
+    // Pass through all the rotors forward
+    for(j=0; j < machine.numrotors; j++) {
+        index = rotor_forward(&machine.rotors[j], index);
+    }
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "2Into reflector %c", alpha[index]);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
+    // Inbound
+    inputChar = machine.reflector[index];
+    // Outbound
+    index = str_index(alpha, inputChar);
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
+    // Pass back through the rotors in reverse
+    for(j = machine.numrotors - 1; j >= 0; j--) {
+       index = rotor_reverse(&machine.rotors[j], index);
+    }
+
+    // Pass through Plugboard
+    inputChar = alpha[index];
+
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Plugboard index %d", index);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Output character ******** %c", inputChar);
+    return inputChar;
+
+}
+// -------------------------------------------------------------------------------------------------------
+//                                      End: Algorithm
 // -------------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------------
@@ -113,16 +274,20 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     inputMessage[l+1] = 0;
     text_layer_set_text(input_message_layer, inputMessage);
   }
-  // Add a char to output text 
+  // calculate the output text
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "inputText: %c", inputText[textCounter]);
+  char calculated = calculate(inputText[textCounter]); 
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "outputText: %c", calculated);
+   // Add a char to output text 
   unsigned int J = strlen(outputMessage); // Can remove if the the input and output buffer is the same length
   if(J<sizeof(outputMessage)-1) { // Check we have enough room left for an extra character
-    outputMessage[J] = outputText[textCounter];
+    outputMessage[J] = calculated;
     outputMessage[J+1] = 0;
     text_layer_set_text(output_message_layer, outputMessage);
   }
   // A temp holder for the output text
   // using the calculate function in the Enigma Alg
-  outputHolder[0] = calculate(inputText[textCounter]);
+  outputHolder[0] = calculated;
   // Update the output text layer with the output holder
   text_layer_set_text(output_text_layer, outputHolder);
 
@@ -205,16 +370,12 @@ static void click_config_provider(void *context) {
 //                               The Main Screen: Windows Load and unload
 // -------------------------------------------------------------------------------------------------------
 static void window_load(Window *window) {
-  // Create Enigma instance
-  struct Enigma machine = {}; // initialized to defaults
-  int i, index;
 
-  // Configure an enigma machine
+    // Configure an enigma machine
   machine.reflector = reflectors[1];
-  machine.rotors[0] = new_rotor(&machine, rotorTypePostition[0], rotorPostition[0]);
-  machine.rotors[1] = new_rotor(&machine, rotorTypePostition[1], rotorPostition[1]);
-  machine.rotors[2] = new_rotor(&machine, rotorTypePostition[2], rotorPostition[2]);
-
+  machine.rotors[0] = new_rotor(&machine, 2, rotorTypePostition[2], rotorPostition[2]);
+  machine.rotors[1] = new_rotor(&machine, 1, rotorTypePostition[1], rotorPostition[1]);
+  machine.rotors[2] = new_rotor(&machine, 0, rotorTypePostition[0], rotorPostition[0]);
 
 
 
