@@ -11,13 +11,12 @@
 
 // Libraries
 #include <pebble.h>
-#include <string.h>
 #include <time.h>
+#include <ctype.h>
 #include "Enigma.h"
 #include "settings/Settings.h" // The settings file
 
 
-//#include "EnigmaAlgorithm.h"
 
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
@@ -74,14 +73,14 @@ int textCounter = 0;
 
 
 // Algorithm Variables
-const char *reflectors[] = {
+char *reflectors[] = {
     "EJMZALYXVBWFCRQUONTSPIKHGD",
     "YRUHQSLDPXNGOKMIEBFZCWVJAT",
     "FVPJIAOYEDRZXWGCTKUQSBNMHL"
 };
 
-const char *alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char *rotor_ciphers[] = {
+char *alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+char *rotor_ciphers[] = {
     "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 
     "AJDKSIRUXBLHWTMCQGZNPYFVOE",
     "BDFHJLCPRTXVZNYEIWGAKMUSQO",
@@ -92,22 +91,22 @@ const char *rotor_ciphers[] = {
     "FKQHTLXOCBJSPDZRAMEWNIUYGV"
 };
 
-const char *rotor_notches[] = {"Q", "E", "V", "J", "Z", "ZM", "ZM", "ZM"};
+char *rotor_notches[] = {"Q", "E", "V", "J", "Z", "ZM", "ZM", "ZM"};
 
-const char *rotor_turnovers[] = {"R", "F", "W", "K", "A", "AN", "AN", "AN"};
+char *rotor_turnovers[] = {"R", "F", "W", "K", "A", "AN", "AN", "AN"};
 
 struct Rotor {
-    int             offset;
-    int             turnnext;
-    int             rotornum;
-    const char      *cipher;
-    const char      *turnover;
-    const char      *notch;
+    int        offset;
+    int        turnnext;
+    int        rotornum;
+    char      *cipher;
+    char      *turnover;
+    char      *notch;
 };
 
 struct Enigma {
     int             numrotors;
-    const char      *reflector;
+    char            *reflector;
     struct Rotor    rotors[8];
 };
 
@@ -115,7 +114,7 @@ struct Enigma {
  * Produce a rotor object
  * Setup the correct offset, cipher set and turn overs.
  */
-struct Rotor new_rotor(struct Enigma *machine, int whichmotor, int rotornumber, int offset) {
+struct Rotor new_rotor(struct Enigma *machine,  int whichmotor, int rotornumber, int offset) {
     struct Rotor r;
     r.offset = offset;
     r.turnnext = 0;
@@ -145,8 +144,8 @@ struct Enigma machine = {0}; // initialized to defaults
  * Return the index position of a character inside a string
  * if not found then -1
  **/
-int str_index(const char *str, int character) {
-    char *pos;
+int str_index(char *str, int character) {
+    char *pos = NULL;
     int index;
     pos = strchr(str, character);
 
@@ -159,6 +158,7 @@ int str_index(const char *str, int character) {
 
     return index;
 }
+
 void rotorTypeCheck(){
     for(int i =0; i < 3; i++){
       machine.rotors[i].cipher = rotor_ciphers[rotorTypePostition[2-i] - 1];
@@ -196,7 +196,7 @@ void rotor_cycle(struct Rotor *rotor) {
 int rotor_forward(struct Rotor *rotor, int index) {
 
     // In the cipher side, out the alpha side
-    index = (index + rotor->offset) % ROTATE;
+    index = (index + rotor->offset) % ROTATE; 
     index = str_index(alpha, rotor->cipher[index]);
     index = (ROTATE + index - rotor->offset) % ROTATE;
 
@@ -240,26 +240,30 @@ char calculate(char inputChar){
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Character  is  :%c", inputChar);
         }
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "1Into reflector %c", alpha[index]);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "1Into reflector %c", alpha[index]);
     // Pass through all the rotors forward
     for(j=0; j < machine.numrotors; j++) {
+        // ******* CRASH HERE *******
         index = rotor_forward(&machine.rotors[j], index);
     }
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "2Into reflector %c", alpha[index]);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "2Into reflector %c", alpha[index]);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
     // Inbound
     inputChar = machine.reflector[index];
     // Outbound
     index = str_index(alpha, inputChar);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Reached here");
+
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
     // Pass back through the rotors in reverse
     for(j = machine.numrotors - 1; j >= 0; j--) {
+      // ******* CRASH HERE *******
        index = rotor_reverse(&machine.rotors[j], index);
     }
-
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Reached here2");
     // Pass through Plugboard
     inputChar = alpha[index];
 
@@ -388,11 +392,10 @@ static void window_load(Window *window) {
 
     // Configure an enigma machine
   machine.reflector = reflectors[1];
+  //machine.rotors[0] = new_rotor(&machine, 2, rotorTypePostition[2], rotorPostition[2]);
   machine.rotors[0] = new_rotor(&machine, 2, rotorTypePostition[2], rotorPostition[2]);
   machine.rotors[1] = new_rotor(&machine, 1, rotorTypePostition[1], rotorPostition[1]);
   machine.rotors[2] = new_rotor(&machine, 0, rotorTypePostition[0], rotorPostition[0]);
-
-
 
   // Set layer 
   Layer *window_layer = window_get_root_layer(window);
