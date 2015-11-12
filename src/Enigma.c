@@ -16,14 +16,12 @@
 #include "Enigma.h"
 #include "settings/Settings.h" // The settings file
 
-
-
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
 //-----Config --------
 #define DELAYTIME 2500 //time for logo splashscreen in milisecons
-#define ROTATE 26
+#define ROTATE 26 
 
 //-End-Config --------
 
@@ -67,6 +65,7 @@ char rotatorText[3][2] = {"A","A","A"}; // the text that will be displayed on sc
 char rotatorHolder[3][2] = {" "," "," "}; // A temp holder for transferring the rotator text
 
 int rotorPostition[3];
+int rotorTypePostition[3];
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
@@ -80,6 +79,7 @@ char *reflectors[] = {
 };
 
 char *alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 char *rotor_ciphers[] = {
     "EKMFLGDQVZNTOWYHXUSPAIBRCJ", 
     "AJDKSIRUXBLHWTMCQGZNPYFVOE",
@@ -107,28 +107,28 @@ struct Rotor {
 struct Enigma {
     int             numrotors;
     char            *reflector;
-    struct Rotor    rotors[8];
+    struct Rotor    rotors[3];
 };
 
 /*
  * Produce a rotor object
  * Setup the correct offset, cipher set and turn overs.
  */
-struct Rotor new_rotor(struct Enigma *machine,  int whichmotor, int rotornumber, int offset) {
+struct Rotor new_rotor(struct Enigma *machine,  int whichrotor, int rotornumber, int offset) {
     struct Rotor r;
     r.offset = offset;
     r.turnnext = 0;
-    r.cipher = rotor_ciphers[rotornumber - 1];
-    r.turnover = rotor_turnovers[rotornumber - 1];
-    r.notch = rotor_notches[rotornumber - 1];
-    r.rotornum =  whichmotor;
+    r.cipher = rotor_ciphers[rotornumber];
+    r.turnover = rotor_turnovers[rotornumber];
+    r.notch = rotor_notches[rotornumber];
+    r.rotornum =  whichrotor;
     machine->numrotors++;
 
     return r;
 }
-// Create Enigma instance
-struct Enigma machine = {0}; // initialized to defaults
 
+// Create Enigma instance
+struct Enigma machine;
 
 
 
@@ -155,15 +155,14 @@ int str_index(char *str, int character) {
     } else {
         index = -1;
     }
-
     return index;
 }
 
 void rotorTypeCheck(){
     for(int i =0; i < 3; i++){
-      machine.rotors[i].cipher = rotor_ciphers[rotorTypePostition[2-i] - 1];
-      machine.rotors[i].turnover = rotor_turnovers[rotorTypePostition[2-i] - 1];
-      machine.rotors[i].notch = rotor_notches[rotorTypePostition[2-i] - 1];
+      machine.rotors[i].cipher = rotor_ciphers[rotorTypePostition[2-i]];
+      machine.rotors[i].turnover = rotor_turnovers[rotorTypePostition[2-i]];
+      machine.rotors[i].notch = rotor_notches[rotorTypePostition[2-i]];
     }
 }
 /*
@@ -178,6 +177,7 @@ void rotor_cycle(struct Rotor *rotor) {
     // Also update the rotor Posiitions
     rotorPostition[rotor->rotornum]++;
     rotatorText[rotor->rotornum][0]++;
+    // if it's over Z(25) set it to A(0)
     rotor->offset = rotor->offset % ROTATE;
     rotorPostition[rotor->rotornum] = rotorPostition[rotor->rotornum] % ROTATE; 
     if(rotatorText[rotor->rotornum][0] > 'Z'){
@@ -217,11 +217,25 @@ int rotor_reverse(struct Rotor *rotor, int index) {
     return index;
 
 }
+
 char calculate(char inputChar){
+
+    // initialized to defaults  
+    struct Enigma machine = {.numrotors = 0, .reflector = NULL, .rotors[0] = {.cipher = NULL, .turnover = NULL, .notch = NULL, .offset = 0, .turnnext = 0, .rotornum = 0},
+                                                                .rotors[1] = {.cipher = NULL, .turnover = NULL, .notch = NULL, .offset = 0, .turnnext = 0, .rotornum = 0},
+                                                                .rotors[2] = {.cipher = NULL, .turnover = NULL, .notch = NULL, .offset = 0, .turnnext = 0, .rotornum = 0}}; 
+ 
+    machine.reflector = reflectors[1];
+    machine.rotors[0] = new_rotor(&machine, 2, rotorTypePostition[2], rotorPostition[2]);
+    machine.rotors[1] = new_rotor(&machine, 1, rotorTypePostition[1], rotorPostition[1]);
+    machine.rotors[2] = new_rotor(&machine, 0, rotorTypePostition[0], rotorPostition[0]);
+
     int j, index;
     index = str_index(alpha, inputChar);
+
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Index %i", index);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Input character ******** %c", inputChar);
+    
     // Cycle first rotor before pushing through,
     rotor_cycle(&machine.rotors[0]);
     // Double step the rotor
@@ -240,30 +254,28 @@ char calculate(char inputChar){
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Character  is  :%c", inputChar);
         }
     }
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "1Into reflector %c", alpha[index]);
     // Pass through all the rotors forward
     for(j=0; j < machine.numrotors; j++) {
         // ******* CRASH HERE *******
         index = rotor_forward(&machine.rotors[j], index);
     }
 
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "2Into reflector %c", alpha[index]);
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Into reflector %c", alpha[index]);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
     // Inbound
+
     inputChar = machine.reflector[index];
+
     // Outbound
     index = str_index(alpha, inputChar);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Reached here");
-
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
+    
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
     // Pass back through the rotors in reverse
     for(j = machine.numrotors - 1; j >= 0; j--) {
-      // ******* CRASH HERE *******
        index = rotor_reverse(&machine.rotors[j], index);
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Reached here2");
     // Pass through Plugboard
     inputChar = alpha[index];
 
@@ -297,7 +309,8 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "inputText: %c", inputText[textCounter]);
   char calculated = calculate(inputText[textCounter]); 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "outputText: %c", calculated);
-   // Add a char to output text 
+
+  // Add a char to output text 
   unsigned int J = strlen(outputMessage); // Can remove if the the input and output buffer is the same length
   if(J<sizeof(outputMessage)-1) { // Check we have enough room left for an extra character
     outputMessage[J] = calculated;
@@ -389,13 +402,6 @@ static void click_config_provider(void *context) {
 //                               The Main Screen: Windows Load and unload
 // -------------------------------------------------------------------------------------------------------
 static void window_load(Window *window) {
-
-    // Configure an enigma machine
-  machine.reflector = reflectors[1];
-  //machine.rotors[0] = new_rotor(&machine, 2, rotorTypePostition[2], rotorPostition[2]);
-  machine.rotors[0] = new_rotor(&machine, 2, rotorTypePostition[2], rotorPostition[2]);
-  machine.rotors[1] = new_rotor(&machine, 1, rotorTypePostition[1], rotorPostition[1]);
-  machine.rotors[2] = new_rotor(&machine, 0, rotorTypePostition[0], rotorPostition[0]);
 
   // Set layer 
   Layer *window_layer = window_get_root_layer(window);
@@ -543,8 +549,6 @@ static void logoWindow_load(Window *logoWindow) {
   // Put the bitmap into the layer
   bitmap_layer_set_bitmap(logo_layer, logo_bitmap);
 
-
-
   // Add child
   layer_add_child(window_layer, bitmap_layer_get_layer(logo_layer));
 
@@ -564,6 +568,7 @@ static void logoWindow_unload(Window *logoWindow) {
 //                                       The Main Screen
 // -------------------------------------------------------------------------------------------------------
 static void mainInit(void) {
+
   //Create window for main screen
   window = window_create();
     // Create a window for logo screen
@@ -614,7 +619,7 @@ int main(void) {
   // Go to the main screen 
   mainInit();
   // For debuggin
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Done initializing, pushed window: %p", window);
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Done initializing, pushed window: %p", window);
   // Enter the main event loop. This will block until the app is ready to exit.
   app_event_loop();
   // Do clean up main screen

@@ -84,14 +84,7 @@ static void selection_handle_dec(int index, uint8_t clicks, void *context) {
   // Update the input text layer with the holder
   text_layer_set_text(rotatorType_layer[selectType], typePositionHolder[selectType]);
 }
-/*
-// The button mapping for the main screen
-static void click_config_provider(void *context) {
-  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
-}
-*/
+
 // -------------------------------------------------------------------------------------------------------
 //                                End: The Main Screen: set button map
 // -------------------------------------------------------------------------------------------------------
