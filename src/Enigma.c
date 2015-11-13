@@ -419,9 +419,9 @@ static void window_load(Window *window) {
   GFont messageFont = fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD); // Font for message input
 
   // Create layers for each and define the positions and size
-  input_text_layer = text_layer_create((GRect) { .origin = { 14.5, 109 }, .size = { 28, 28 } }); 
+  input_text_layer = text_layer_create((GRect) { .origin = { 13, 109 }, .size = { 30, 32 } }); 
   input_message_layer = text_layer_create((GRect) { .origin = { 60, 90 }, .size = { 85, 80 } });
-  output_text_layer = text_layer_create((GRect) { .origin = { 14.5, 14 }, .size = { 28, 28 } });
+  output_text_layer = text_layer_create((GRect) { .origin = { 13, 14 }, .size = { 30, 32 } });
   output_message_layer = text_layer_create((GRect) { .origin = { 60, 0 }, .size = { 85, 80 } });
 
   rotatorText1_layer = text_layer_create((GRect) { .origin = { 6.5, 70 }, .size = { 15, 15 } });
