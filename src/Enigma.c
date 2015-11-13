@@ -66,6 +66,7 @@ char rotatorHolder[3][2] = {" "," "," "}; // A temp holder for transferring the 
 
 int rotorPostition[3];
 int rotorTypePostition[3];
+char plugConnectLetters[26][2];
 // Counter variable for cycling the alphabet
 int textCounter = 0; 
 
@@ -180,6 +181,7 @@ void rotor_cycle(struct Rotor *rotor) {
     // if it's over Z(25) set it to A(0)
     rotor->offset = rotor->offset % ROTATE;
     rotorPostition[rotor->rotornum] = rotorPostition[rotor->rotornum] % ROTATE; 
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "rotorPostition[%i] %i and offset is %i", rotor->rotornum, rotorPostition[rotor->rotornum],rotor->offset);
     if(rotatorText[rotor->rotornum][0] > 'Z'){
       rotatorText[rotor->rotornum][0] = 'A';
     }
@@ -277,7 +279,12 @@ char calculate(char inputChar){
        index = rotor_reverse(&machine.rotors[j], index);
     }
     // Pass through Plugboard
-    inputChar = alpha[index];
+    if(plugConnectLetters[index][0] == ' '){
+       inputChar = alpha[index];
+    }
+    else{
+       inputChar = plugConnectLetters[index][0];
+    }
 
 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Plugboard index %d", index);
