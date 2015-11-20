@@ -73,7 +73,7 @@ static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex 
 }
 
 static void draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  if (plugUsed +1 > 10){
+  if (plugUsed +1 > 20){
     snprintf(label, sizeof(label), "Choose a letter%*sMax!", DISTANCE_BETWEEN_LABEL, "");
     menu_cell_basic_header_draw(ctx, cell_layer, label);
   }

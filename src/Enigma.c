@@ -160,7 +160,7 @@ int str_index(char *str, int character) {
 }
 
 void rotorTypeCheck(){
-    for(int i =0; i < 3; i++){
+    for(int i =0; i < machine.numrotors; i++){
       machine.rotors[i].cipher = rotor_ciphers[rotorTypePostition[2-i]];
       machine.rotors[i].turnover = rotor_turnovers[rotorTypePostition[2-i]];
       machine.rotors[i].notch = rotor_notches[rotorTypePostition[2-i]];
@@ -181,7 +181,7 @@ void rotor_cycle(struct Rotor *rotor) {
     // if it's over Z(25) set it to A(0)
     rotor->offset = rotor->offset % ROTATE;
     rotorPostition[rotor->rotornum] = rotorPostition[rotor->rotornum] % ROTATE; 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "rotorPostition[%i] %i and offset is %i", rotor->rotornum, rotorPostition[rotor->rotornum],rotor->offset);
+    
     if(rotatorText[rotor->rotornum][0] > 'Z'){
       rotatorText[rotor->rotornum][0] = 'A';
     }
@@ -235,8 +235,8 @@ char calculate(char inputChar){
     int j, index;
     index = str_index(alpha, inputChar);
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Index %i", index);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Input character ******** %c", inputChar);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index %i", index);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Input character ******** %c", inputChar);
     
     // Cycle first rotor before pushing through,
     rotor_cycle(&machine.rotors[0]);
@@ -251,9 +251,9 @@ char calculate(char inputChar){
         if(machine.rotors[j].turnnext) {
             machine.rotors[j].turnnext = 0;
             rotor_cycle(&machine.rotors[j+1]);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Cycling  rotor :%d", j+1);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Turnover rotor :%d", j);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Character  is  :%c", inputChar);
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "Cycling  rotor :%d", j+1);
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "Turnover rotor :%d", j);
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "Character  is  :%c", inputChar);
         }
     }
     // Pass through all the rotors forward
@@ -262,8 +262,8 @@ char calculate(char inputChar){
         index = rotor_forward(&machine.rotors[j], index);
     }
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Into reflector %c", alpha[index]);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Into reflector %c", alpha[index]);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Out of reflector %c", machine.reflector[index]);
     // Inbound
 
     inputChar = machine.reflector[index];
@@ -272,8 +272,8 @@ char calculate(char inputChar){
     index = str_index(alpha, inputChar);
 
     
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index out of reflector %i", index);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "->Reflected character %c", inputChar);
     // Pass back through the rotors in reverse
     for(j = machine.numrotors - 1; j >= 0; j--) {
        index = rotor_reverse(&machine.rotors[j], index);
@@ -287,8 +287,8 @@ char calculate(char inputChar){
     }
 
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Plugboard index %d", index);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Output character ******** %c", inputChar);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Plugboard index %d", index);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Output character ******** %c", inputChar);
 
     // out put the char for output
     return inputChar;
@@ -313,9 +313,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     text_layer_set_text(input_message_layer, inputMessage);
   }
   // calculate the output text
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "inputText: %c", inputText[textCounter]);
   char calculated = calculate(inputText[textCounter]); 
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "outputText: %c", calculated);
 
   // Add a char to output text 
   unsigned int J = strlen(outputMessage); // Can remove if the the input and output buffer is the same length
