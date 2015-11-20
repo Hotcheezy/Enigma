@@ -23,6 +23,6 @@ The settings window can be accessed by holding any of the Up, Select or Down but
 On the main screen, the input letter can be shifted by pressing the Up or Down button. The button left circle contains the input text and the upper left circle contains the output text. Pressing the Select button adds the input letter to the input message and the corresponding output letter is added to the output message.
 
 
-<a href="https://apps.getpebble.com/applications/564574afb69084719900003a">App store link</a>
+<h2><a href="https://apps.getpebble.com/applications/564574afb69084719900003a">App store link</a></h2>
 
 
