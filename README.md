@@ -1,9 +1,9 @@
 # Screenshots
-![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot01.png?raw=true)</br>
-![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot02.png?raw=true)</br>
-![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot03.png?raw=true)</br>
-![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot04.png?raw=true)</br>
-![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot05.png?raw=true)</br>
+![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot01.png?raw=true)
+![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot02.png?raw=true)
+![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot03.png?raw=true)
+![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot04.png?raw=true)
+![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot05.png?raw=true)
 
 
 #Description
