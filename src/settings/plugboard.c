@@ -37,7 +37,6 @@ static ActionMenu *s_action_menu;
 static ActionMenuLevel *s_root_level, *s_custom_level;
 static char string_text[32];
 static char label[32];
-static char max[4] = "Max";
 
 // The letter connections on the right - by default it's left empty
 char plugConnectLetters[26][2] = {" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
@@ -165,7 +164,7 @@ static void action_performed_callback(ActionMenu *action_menu, const ActionMenuI
 
 static void init_action_menu() {
   // Create the root level
-  s_root_level = action_menu_level_create(27);
+  s_root_level = action_menu_level_create(NUM_LEVELS);
 
   // Set up the actions for this level, using action context to pass types
   action_menu_level_add_action(s_root_level, "Clear", action_performed_callback, 

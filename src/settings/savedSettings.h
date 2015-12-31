@@ -1,7 +1,7 @@
 //=======================================================================================================
 // Project: Enigma 1.0v
 // Description: Enigma Machine on Pebble Watch
-// File: The rotatorType.c file
+// File: The savedSettings.h file
 // Built using Pebble SDK 3.4v
 // Date: October 25, 2015
 //
@@ -13,8 +13,10 @@
 
 #include <pebble.h>
 
-// Define
-#define NUM_CELLS 3 //number of cells in the shifting window
+// Def
+#define NUM_SAVE_ACTIONS 2 // Number of things to select in the menu
+#define CHECKBOX_SAVE_WINDOW_CELL_HEIGHT 47
+#define NUM_SAVE_WINDOWS_PLUG 3 // number of windows for the plug window
 
 // Pushed to the menu window
-void rotator_type_push();
+void savedSettings_window_push();

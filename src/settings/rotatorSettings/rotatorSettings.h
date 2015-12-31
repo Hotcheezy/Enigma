@@ -13,5 +13,9 @@
 
 #include <pebble.h>
 
+// Def
+#define NUM_WINDOWS 2 // Number of things to select in the menu
+
+
 // Pushed to the menu window
 void rotator_settings_push();

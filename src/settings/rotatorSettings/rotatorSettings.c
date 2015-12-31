@@ -17,9 +17,6 @@
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
 
-// Number of things to select in the menu
-#define NUM_WINDOWS 2
-
 // Windows and layer variables
 static Window *menu_window;
 static MenuLayer *menu_layer;

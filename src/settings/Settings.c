@@ -13,12 +13,12 @@
 #include "Settings.h"
 #include "rotatorSettings/rotatorSettings.h"
 #include "plugboard.h"
+#include "savedSettings.h"
 // -------------------------------------------------------------------------------------------------------
 //                                      Declare Variables
 // -------------------------------------------------------------------------------------------------------
 
-// Number of things to select in the menu
-#define NUM_WINDOWS 2
+
 
 // Windows and layer variables
 static Window *menu_window;
@@ -47,6 +47,9 @@ static void draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_
     case 1:
       menu_cell_basic_draw(ctx, cell_layer, "Plugboard", NULL, NULL);
       break;
+    case 2:
+      menu_cell_basic_draw(ctx, cell_layer, "Saved settings", NULL, NULL);
+      break;
     default:
       break;
   }
@@ -65,6 +68,9 @@ static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index,
       break;
     case 1:
       plugboard_window_push();
+      break;
+    case 2:
+      savedSettings_window_push();
       break;
     default:
       break;

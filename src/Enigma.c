@@ -145,7 +145,7 @@ struct Enigma machine;
  * Return the index position of a character inside a string
  * if not found then -1
  **/
-int str_index(char *str, int character) {
+static int str_index(char *str, int character) {
     char *pos = NULL;
     int index;
     pos = strchr(str, character);
@@ -159,7 +159,7 @@ int str_index(char *str, int character) {
     return index;
 }
 
-void rotorTypeCheck(){
+static void rotorTypeCheck(){
     for(int i =0; i < machine.numrotors; i++){
       machine.rotors[i].cipher = rotor_ciphers[rotorTypePostition[2-i]];
       machine.rotors[i].turnover = rotor_turnovers[rotorTypePostition[2-i]];
@@ -169,7 +169,7 @@ void rotorTypeCheck(){
 /*
  * Cycle a rotor's offset but keep it in the array.
  */
-void rotor_cycle(struct Rotor *rotor) {
+static void rotor_cycle(struct Rotor *rotor) {
     // check and update the rotor type everythime
     rotorTypeCheck();
     // update the offset with the newest rotor position
@@ -195,7 +195,7 @@ void rotor_cycle(struct Rotor *rotor) {
  * Pass through a rotor, right to left, cipher to alpha.
  * returns the exit index location.
  */
-int rotor_forward(struct Rotor *rotor, int index) {
+static int rotor_forward(struct Rotor *rotor, int index) {
 
     // In the cipher side, out the alpha side
     index = (index + rotor->offset) % ROTATE; 
@@ -209,7 +209,7 @@ int rotor_forward(struct Rotor *rotor, int index) {
  * Pass through a rotor, left to right, alpha to cipher.
  * returns the exit index location.
  */
-int rotor_reverse(struct Rotor *rotor, int index) {
+static int rotor_reverse(struct Rotor *rotor, int index) {
 
     // In the cipher side, out the alpha side
     index = (index + rotor->offset) % ROTATE;
@@ -220,7 +220,7 @@ int rotor_reverse(struct Rotor *rotor, int index) {
 
 }
 
-char calculate(char inputChar){
+static char calculate(char inputChar){
 
     // initialized to defaults  
     struct Enigma machine = {.numrotors = 0, .reflector = NULL, .rotors[0] = {.cipher = NULL, .turnover = NULL, .notch = NULL, .offset = 0, .turnnext = 0, .rotornum = 0},
@@ -378,6 +378,7 @@ static void back_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(input_message_layer, inputMessage);
   text_layer_set_text(output_message_layer, outputMessage);
 }
+
 // If the user long clicks or long clicks and release, go to the menu
 static void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
   menu_push();
@@ -410,7 +411,6 @@ static void window_load(Window *window) {
 
   // Set layer 
   Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer);
   // Load the fonts
 
   GFont textFont = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD); //Font for Text input

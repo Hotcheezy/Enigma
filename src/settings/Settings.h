@@ -13,5 +13,9 @@
 
 #include <pebble.h>
 
+// Def
+#define NUM_WINDOWS 3 // Number of things to select in the menu
+
+
 // Pushed to the menu window
 void menu_push();
