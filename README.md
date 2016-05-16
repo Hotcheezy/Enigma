@@ -1,4 +1,5 @@
 # Enigma
+[![Build Status](https://travis-ci.org/PeterL328/Enigma.svg?branch=master)](https://travis-ci.org/PeterL328/Enigma)
 ## Screenshots
 ![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot01.png?raw=true)
 ![Alt text](https://github.com/PeterL328/Enigma/blob/master/ScreenShots/screenshot02.png?raw=true)
