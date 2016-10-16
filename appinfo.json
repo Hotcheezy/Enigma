@@ -17,18 +17,24 @@
   },
   "resources": {
     "media": [
-     {
+      {
         "menuIcon": true,
+        "type": "png",
+        "name": "IMAGE_MENU_ICON",
+        "file": "menu_icon.png"
+      },
+      {
+        "menuIcon": false,
         "type": "png",
         "name": "LOGO",
         "file": "enigma.png"
-     },
-     {
+      },
+      {
         "menuIcon": false,
         "type": "png",
         "name": "FRAME",
         "file": "frame.png"
-     }
+      }
     ]
   }
 }
