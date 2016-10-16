@@ -57,10 +57,10 @@ static int16_t get_cell_height_callback(struct MenuLayer *menu_layer, MenuIndex 
   return 30;
 }
 
-// The row selector. It pushes to whichever window 
+// The row selector. It pushes to whichever window
 static void select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
   switch(cell_index->row) {
-    case 0: 
+    case 0:
       rotator_settings_push();
       break;
     case 1:
@@ -95,13 +95,13 @@ static void window_load(Window *window) {
   menu_layer = menu_layer_create(bounds);
   menu_layer_set_click_config_onto_window(menu_layer, window);
   menu_layer_set_callbacks(menu_layer, NULL, (MenuLayerCallbacks) {
-      .get_num_rows = (MenuLayerGetNumberOfRowsInSectionsCallback)get_num_rows_callback,
-      .draw_row = (MenuLayerDrawRowCallback)draw_row_callback,
-      .get_cell_height = (MenuLayerGetCellHeightCallback)get_cell_height_callback,
-      .select_click = (MenuLayerSelectCallback)select_callback,
-      .draw_header = (MenuLayerDrawHeaderCallback)draw_header_callback,
-      .get_header_height = (MenuLayerGetHeaderHeightCallback)get_header_height_callback,
-      .get_num_sections = (MenuLayerGetNumberOfSectionsCallback)get_num_sections_callback,
+    .get_num_rows = (MenuLayerGetNumberOfRowsInSectionsCallback)get_num_rows_callback,
+    .draw_row = (MenuLayerDrawRowCallback)draw_row_callback,
+    .get_cell_height = (MenuLayerGetCellHeightCallback)get_cell_height_callback,
+    .select_click = (MenuLayerSelectCallback)select_callback,
+    .draw_header = (MenuLayerDrawHeaderCallback)draw_header_callback,
+    .get_header_height = (MenuLayerGetHeaderHeightCallback)get_header_height_callback,
+    .get_num_sections = (MenuLayerGetNumberOfSectionsCallback)get_num_sections_callback,
   });
   // Add menu to the windows layer
   layer_add_child(window_layer, menu_layer_get_layer(menu_layer));
@@ -128,7 +128,7 @@ void menu_push() {
     });
     window_stack_push(menu_window, true);
   }
-  
+
 }
 
 
